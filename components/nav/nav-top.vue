@@ -7,7 +7,7 @@
         <i v-if="!$store.state.user" @click="$router.push('/search')" class="iconfont">&#xe651;</i>
         <div v-if="$store.state.user" class="userinfo">
           <div @click.stop="showTip($event)" class="avaLogin">
-            <avatar :size=32 :src='$store.state.user.avatar' :username="$store.state.user.username"></avatar>
+            <avatar color="#fff" :size=32 :src='$store.state.user.avatar' :username="$store.state.user.username"></avatar>
           </div>
 
           <div v-show="isShow" class="tip">
@@ -116,9 +116,6 @@ export default {
       border-radius: 2px;
       cursor: pointer;
       margin-left: 20px;
-      // margin-right: 20px;
-    }
-    .register {
     }
     .userinfo {
       position: relative;

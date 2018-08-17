@@ -1,16 +1,15 @@
 <template>
-  <div class="preview" v-show="isPreview">
-    <div class="wrp">
-      <span @click="close" class="close">CLOSE</span>
-      <no-ssr>
-        <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
-      </no-ssr>
+    <div class="preview">
+        <div class="wrp">
+            <no-ssr>
+                <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
+            </no-ssr>
+        </div>
     </div>
-  </div>
 </template>
 <script>
 export default {
-  props: ["previewContent", "isPreview"],
+  props: ["previewContent"],
   data() {
     return {
       isDefaultOpen: "preview",
@@ -31,29 +30,12 @@ export default {
 
 <style lang="less">
 .preview {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
+  width: 800px;
   height: 100%;
-  background-color: rgba(128, 128, 128, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
 }
 .preview .wrp {
-  width: 850px;
+  width: 100%;
   height: 100%;
-  background-color: #fff;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  .close {
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    cursor: pointer;
-    z-index: 1000;
-  }
   .markdown-body {
     z-index: 1;
     border-radius: 5px;
@@ -63,6 +45,13 @@ export default {
       border-radius: 5px;
       .v-show-content {
         background-color: #fff !important;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5:nth-child(1) {
+          margin-top: 0px;
+        }
         li {
           list-style: disc;
         }
@@ -77,6 +66,9 @@ export default {
           background-color: #fff;
           border: 1px solid #ccc;
           .hljs {
+            code {
+              white-space: pre-wrap;
+            }
             code[class*="javascript"]::before {
               content: "JS";
               font-size: 13px;
@@ -125,6 +117,9 @@ export default {
           }
         }
       }
+    }
+    .v-note-panel .v-note-show .v-show-content {
+      padding: 0px;
     }
   }
 }

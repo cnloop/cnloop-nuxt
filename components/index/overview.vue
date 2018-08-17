@@ -5,91 +5,25 @@
       <span>活动</span>
     </div>
     <ul class="content">
-      <li>
+      <li :data-color="topic.category" v-colorFilterLine v-for="topic in arr_topics" :key="topic.id">
         <div class="left">
           <div>
-            <avatar username="Hello" :inline=false :size=53></avatar>
+            <avatar color="#fff" :username="topic.username" :inline=false :size=53></avatar>
           </div>
           <div class="info">
-            <router-link to="/" class="title">General Discussion</router-link>
+            <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
             <div class="bottom">
-              <span></span>
-              <span>Vue.js</span>
+              <span :data-color="topic.category" v-colorFilterBackground></span>
+              <span>{{topic.category}}</span>
             </div>
           </div>
         </div>
         <div class="right">
           <div class="top">
-            <span>0</span>
+            <span>{{topic.comment_count?topic.comment_count:0}}</span>
           </div>
           <div class="bottom">
-            <span>7小时前</span>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="left">
-          <div>
-            <avatar username="Hello" :inline=false :size=53></avatar>
-          </div>
-          <div class="info">
-            <router-link to="/" class="title">General Discussion</router-link>
-            <div class="bottom">
-              <span></span>
-              <span>Vue.js</span>
-            </div>
-          </div>
-        </div>
-        <div class="right">
-          <div class="top">
-            <span>0</span>
-          </div>
-          <div class="bottom">
-            <span>7小时前</span>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="left">
-          <div>
-            <avatar username="Hello" :inline=false :size=53></avatar>
-          </div>
-          <div class="info">
-            <router-link to="/" class="title">General Discussion</router-link>
-            <div class="bottom">
-              <span></span>
-              <span>Vue.js</span>
-            </div>
-          </div>
-        </div>
-        <div class="right">
-          <div class="top">
-            <span>0</span>
-          </div>
-          <div class="bottom">
-            <span>7小时前</span>
-          </div>
-        </div>
-      </li>
-      <li>
-        <div class="left">
-          <div>
-            <avatar username="Hello" :inline=false :size=53></avatar>
-          </div>
-          <div class="info">
-            <router-link to="/" class="title">General Discussion</router-link>
-            <div class="bottom">
-              <span></span>
-              <span>Vue.js</span>
-            </div>
-          </div>
-        </div>
-        <div class="right">
-          <div class="top">
-            <span>0</span>
-          </div>
-          <div class="bottom">
-            <span>7小时前</span>
+            <span>{{topic.updatedAt|dataFormat}}</span>
           </div>
         </div>
       </li>
@@ -104,19 +38,94 @@ import Avatar from "vue-avatar";
 export default {
   data() {
     return {
-      arr_topics: [
-        {
-          username: "",
-          title: "hello man 啊哈哈~",
-          category: "Vue.js",
-          comments: 10,
-          comment_time: ""
-        }
-      ]
+      arr_topics: []
     };
+  },
+  async created() {
+    try {
+      var result = await this.$http.get("/topic/show/overview");
+      this.arr_topics = result.data.data;
+    } catch (err) {
+      console.log(err);
+    }
   },
   components: {
     Avatar
+  },
+  directives: {
+    colorFilterLine: {
+      inserted: function(el) {
+        var value = el.dataset.color;
+        if (!value) return "";
+        if (value === "General Discussion")
+          return (el.style.borderLeft = "4px solid rgb(18, 168, 157)");
+        if (value == "Get Help")
+          return (el.style.borderLeft = "4px solid rgb(101, 45, 144)");
+        if (value == "Show & Vue.js")
+          return (el.style.borderLeft = "4px solid rgb(247, 148, 29)");
+        if (value == "Show & CSS")
+          return (el.style.borderLeft = "4px solid rgb(191, 30, 46)");
+        if (value == "Show & JS")
+          return (el.style.borderLeft = "4px solid rgb(179, 181, 180)");
+        if (value == "Show & Node.js")
+          return (el.style.borderLeft = "4px solid rgb(37, 170, 226)");
+      }
+    },
+    colorFilterBackground: {
+      inserted: function(el) {
+        var value = el.dataset.color;
+        if (!value) return "";
+        if (value === "General Discussion")
+          return (el.style.backgroundColor = "rgb(18, 168, 157)");
+        if (value == "Get Help")
+          return (el.style.backgroundColor = "rgb(101, 45, 144)");
+        if (value == "Show & Vue.js")
+          return (el.style.backgroundColor = "rgb(247, 148, 29)");
+        if (value == "Show & CSS")
+          return (el.style.backgroundColor = "rgb(191, 30, 46)");
+        if (value == "Show & JS")
+          return (el.style.backgroundColor = "rgb(179, 181, 180)");
+        if (value == "Show & Node.js")
+          return (el.style.backgroundColor = "rgb(37, 170, 226)");
+      }
+    }
+  },
+  filters: {
+    dataFormat(value) {
+      if (!value) return "";
+      var y = new Date(value).getFullYear();
+      var m = new Date(value).getMonth() + 1;
+      var d = new Date(value).getDate();
+      value = parseInt(value);
+      var dateDiff = new Date().getTime() - value;
+      var oneYear = 365 * 24 * 3600 * 1000;
+      var oneMonth = 30 * 24 * 3600 * 1000;
+      var oneDay = 24 * 3600 * 1000;
+      var oneHour = 3600 * 1000;
+      var oneMin = 60 * 1000;
+      if (dateDiff / oneYear >= 1) {
+        return `${y}年${m}月${d}日`;
+      } else if (dateDiff / oneMonth >= 1) {
+        return `${m}月${d}日`;
+      } else if (dateDiff / oneDay >= 1) {
+        return `${Math.floor(dateDiff / oneDay)}天前`;
+      } else if (dateDiff / oneHour >= 1) {
+        return `${Math.floor(dateDiff / oneHour)}小时前`;
+      } else if (dateDiff / oneMin >= 1) {
+        return `${Math.floor(dateDiff / oneMin)}分钟前`;
+      } else {
+        return "刚刚";
+      }
+    },
+    readFormat(value) {
+      if (!value) return "";
+      value = parseInt(value);
+      if (value > 1000) {
+        var res = parseInt(value / 1000 * 10) / 10;
+        return `${res}K`;
+      }
+      return value;
+    }
   }
 };
 </script>
@@ -141,7 +150,6 @@ export default {
     display: flex;
     justify-content: space-between;
     padding: 12px 8px;
-    border-left: 4px solid rgb(18, 168, 157);
     border-bottom: 1px solid rgb(233, 233, 233);
     .left {
       width: 430px;
@@ -164,7 +172,6 @@ export default {
             color: #8b8ba2;
             width: 8px;
             height: 8px;
-            background-color: yellow;
           }
           span:last-child {
             font-size: 12px;
@@ -199,21 +206,6 @@ export default {
         justify-content: flex-end;
       }
     }
-  }
-  li:nth-child(2) {
-    border-left: 4px solid rgb(101, 45, 144);
-  }
-  li:nth-child(3) {
-    border-left: 4px solid rgb(247, 148, 29);
-  }
-  li:nth-child(4) {
-    border-left: 4px solid rgb(191, 30, 46);
-  }
-  li:nth-child(5) {
-    border-left: 4px solid rgb(179, 181, 180);
-  }
-  li:nth-child(6) {
-    border-left: 4px solid rgb(37, 170, 226);
   }
 }
 .overview .more {

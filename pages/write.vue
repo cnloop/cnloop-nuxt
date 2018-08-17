@@ -1,13 +1,13 @@
 <template>
   <div class="write">
     <leave-msg @closeMsg="closeMsg" :isMsgShow="isMsgShow">确认离开吗？</leave-msg>
-    <leave-index @closeLeaveIndex="closeLeaveIndex" :isLeaveIndex="isLeaveIndex">上传成功，是否离开？</leave-index>
+    <leave-index @closeLeaveIndex="closeLeaveIndex" :isLeaveIndex="isLeaveIndex">上传成功，即将离开</leave-index>
     <preview @closePreview='closePreview' :isPreview='isPreview' :previewContent='content'></preview>
     <save-tip @closeSaveTip="closeSaveTip" :isSaveTip="isSaveTip">内容已保存到本地</save-tip>
     <div class="wrp">
       <div class="write-header">
         <div class="title">
-          <input type="text" placeholder="输入标题" maxlength="45" v-model="title">
+          <input type="text" placeholder="输入标题" maxlength="50" v-model="title">
         </div>
         <div class="write-category" @click.stop="showAllCategory($event)">
           <div class="write-left">
@@ -40,7 +40,7 @@
 import LeaveMsg from "~/components/common/leave-msg";
 import LeaveIndex from "~/components/common/leave-index";
 import SaveTip from "~/components/common/save-tip";
-import preview from "~/components/write/preview";
+// import preview from "~/components/write/preview";
 
 export default {
   data() {
@@ -111,9 +111,12 @@ export default {
       }
       this.isMsgShow = false;
     },
-    closeLeaveIndex(str) {
-      if (str === "yes") this.$router.push("/");
+    closeLeaveIndex() {
       this.isLeaveIndex = false;
+      window.onbeforeunload = null;
+      window.location.href = "/";
+
+      // this.$router.push("/");
     },
     closeSaveTip() {
       this.isSaveTip = false;
@@ -156,6 +159,7 @@ export default {
       var content = this.content;
       var category = this.sel.text;
       var user_id = this.$store.state.user.id;
+      console.log(title, content, category, user_id);
       if (title && content && category) {
         var result = await this.$http.post("/topic", {
           title,
@@ -163,12 +167,15 @@ export default {
           category,
           user_id
         });
+        console.log(result);
         if (result.data.code === 200) {
           localStorage.removeItem("cnloop-mkcontent");
-          this.isDone = true;
+          this.isLeaveIndex = true;
           setTimeout(() => {
-            this.$router.push("/all/new");
-          }, 3000);
+            window.onbeforeunload = null;
+            this.isLeaveIndex = false;
+            window.location.href = "/";
+          }, 1500);
         }
       } else {
         this.isTipErr = true;
@@ -196,14 +203,12 @@ export default {
     LeaveMsg,
     LeaveIndex,
     SaveTip,
-    preview
+    preview: () => import("~/components/write/preview")
   },
   beforeDestroy() {
-    window.addEventListener("popstate", null);
     window.onbeforeunload = null;
   },
   beforeRouteLeave(to, from, next) {
-    console.dir(to)
     this.isKipUrl = to.path;
     if (this.isKip) {
       next();

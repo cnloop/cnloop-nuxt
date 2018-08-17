@@ -3,14 +3,14 @@
     <div class="content">
       <div class="top">
         <span>消息</span>
-        <span @click="close('no')">×</span>
+        <span @click="close()">×</span>
       </div>
       <div class="center">
         <slot>消息内容...</slot>
       </div>
       <div class="down">
-        <span @click="close('yes')">确认</span>
-        <span @click="close('no')">取消</span>
+        <span @click="close()">确认</span>
+        <!-- <span @click="close('no')">取消</span> -->
       </div>
     </div>
   </div>
@@ -19,8 +19,8 @@
 export default {
   props: ["isLeaveIndex"],
   methods: {
-    close(str) {
-      this.$emit("closeLeaveIndex", str);
+    close() {
+      this.$emit("closeLeaveIndex");
     }
   }
 };

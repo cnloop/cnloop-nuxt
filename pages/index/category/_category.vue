@@ -1,38 +1,38 @@
 <template>
-    <div class="special-category">
-        <table>
-            <thead>
-                <tr>
-                    <th>主题</th>
-                    <th>分类</th>
-                    <th>用户</th>
-                    <th>回复</th>
-                    <th>浏览</th>
-                    <th>活动</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>V-for with simple arrays: what key to use?</td>
-                    <td>
-                        <span></span>
-                        <span>Get Help</span>
-                    </td>
-                    <td>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                        <avatar username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-                    </td>
-                    <td>10</td>
-                    <td>31.3K</td>
-                    <td>4月20日</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="special-category">
+    <table>
+      <thead>
+        <tr>
+          <th>主题</th>
+          <th>分类</th>
+          <th>用户</th>
+          <th>回复</th>
+          <th>浏览</th>
+          <th>活动</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>V-for with simple arrays: what key to use?</td>
+          <td>
+            <span></span>
+            <span>Get Help</span>
+          </td>
+          <td>
+            <avatar color="#fff" src="" username="吴下" :inline=true :size=25 class="td-ava"></avatar>
+            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
+            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
+            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
+            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
+            <avatar color="#fff" username="Jane Doe HE" :inline=true :size=25 class="td-ava"></avatar>
+          </td>
+          <td>10</td>
+          <td>31.3K</td>
+          <td>4月20日</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 <script>
 import Avatar from "vue-avatar";
@@ -125,6 +125,8 @@ export default {
       }
     }
     td:nth-child(3) {
+      display: flex;
+      align-items: center;
       .td-ava:first-child {
         margin-left: 0px;
       }

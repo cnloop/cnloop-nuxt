@@ -27,7 +27,6 @@ module.exports = {
   },
 
   build: {
-    vendor: ['vue-avatar'],
     loaders: [{
       test: /\.less$/,
       use: [{
@@ -52,6 +51,7 @@ module.exports = {
       }
     }
   },
+  vendor: ['vue-avatar', '~/plugins/http.js', '~/plugins/nuxt-mavon-editor.js'],
   plugins: [{
     src: '~/plugins/nuxt-mavon-editor.js',
     ssr: false
