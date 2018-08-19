@@ -8,7 +8,7 @@
       <li :data-color="topic.category" v-colorFilterLine v-for="topic in arr_topics" :key="topic.id">
         <div class="left">
           <div>
-            <avatar color="#fff" :username="topic.username" :inline=false :size=53></avatar>
+            <avatar color="#fff" :src="topic.avatar" :username="topic.username" :inline=false :size=53></avatar>
           </div>
           <div class="info">
             <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
@@ -45,6 +45,7 @@ export default {
     try {
       var result = await this.$http.get("/topic/show/overview");
       this.arr_topics = result.data.data;
+      console.log(this.arr_topics);
     } catch (err) {
       console.log(err);
     }

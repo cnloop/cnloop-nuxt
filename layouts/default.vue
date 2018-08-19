@@ -13,6 +13,10 @@ export default {
   },
   mounted() {
     this.loadUserInfo();
+    this.markLoginStatus();
+  },
+  beforeDestroy() {
+    this.markLoginStatus();
   },
   methods: {
     //记载用户信息，并存储到store
@@ -23,6 +27,11 @@ export default {
       } else {
         this.$store.commit("changeUser", "");
       }
+    },
+    markLoginStatus() {
+      if (!this.$store.state.user.id) return;
+      var result = this.$http.get("/login/markLoginStatus");
+      // console.dir(result);
     }
   },
   directives: {
@@ -95,7 +104,7 @@ html {
 
 @font-face {
   font-family: "iconfont";
-  src: url("//at.alicdn.com/t/font_693384_wj61h4yt3vh.woff") format("woff");
+  src: url("//at.alicdn.com/t/font_693384_jk1518ht42f.woff") format("woff");
 }
 
 .iconfont {
@@ -105,5 +114,14 @@ html {
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.4s;
+}
+.page-enter,
+.page-leave-active {
+  opacity: 0;
 }
 </style>

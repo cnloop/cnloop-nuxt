@@ -10,7 +10,8 @@ const store = () => new Vuex.Store({
     isShow: {
       isTrue: false,
       parentClassName: ''
-    }
+    },
+    replyEndAndLoad: false
   },
   mutations: {
     changeUser(state, user) {
@@ -18,6 +19,9 @@ const store = () => new Vuex.Store({
     },
     changeIsShow(state, isShow) {
       state.isShow = isShow
+    },
+    changeReplyEndAndLoad(state) {
+      state.replyEndAndLoad = !state.replyEndAndLoad
     }
   }
 })

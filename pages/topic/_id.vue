@@ -1,42 +1,68 @@
 <template>
   <div class="topic">
     <div class="wrp">
+      <reply v-show="replyShow" :topicObj="topicObj" @closeReply='closeReply'></reply>
       <div class="main">
+        <!-- title -->
         <h1 class="title">{{topicObj.title}}</h1>
+        <!-- category -->
         <div class="category-button">
           <span :data-color="topicObj.category" v-colorFilterBackground></span>
           <span>{{topicObj.category}}</span>
         </div>
+        <!-- topic -->
         <div class="mian-content">
+          <!-- avatar -->
           <div class="left">
-            <avatar color="#fff" :username="topicObj.username" :inline=false :size=43></avatar>
+            <avatar color="#fff" :src="topicObj.avatar" :username="topicObj.username" :inline=false :size=43></avatar>
           </div>
           <div class="right">
             <div class="top">
               <div class="user-name">{{topicObj.username}}</div>
               <span>{{topicObj.createdAt|dataFormat}}</span>
             </div>
-            <preview class="preview" :previewContent='topicObj.content'></preview>
+            <no-ssr>
+              <preview class="preview" :previewContent='topicObj.content'></preview>
+            </no-ssr>
             <div class="bottom">
+              <div v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
+                <span class="iconfont">&#xe612;</span>
+                <span>delete</span>
+              </div>
+              <div v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
+                <span class="iconfont">&#xe738;</span>
+                <span>update</span>
+              </div>
               <div>
                 <span class="iconfont">&#xe62e;</span>
-                <span>123456</span>
+                <span></span>
               </div>
               <div>
                 <span class="iconfont">&#xe62a;</span>
-                <span>123456</span>
+                <span></span>
               </div>
             </div>
           </div>
         </div>
+        <!-- comment -->
+        <comment-content :topicId="$route.params.id"></comment-content>
+        <!-- reply button -->
+        <div class="reply"  v-if="$store.state.user">
+          <div class="wrp" @click="replyShow=true">
+            <span class="iconfont">&#xe61a;</span>
+            <span>Reply</span>
+          </div>
+        </div>
+
+        <h1 style="padding:100px"></h1>
       </div>
     </div>
   </div>
 </template>
 <script>
 import Avatar from "vue-avatar";
-import preview from "~/components/topic/content";
-
+import Reply from "~/components/topic/reply";
+import CommentContent from "~/components/topic/comment-content";
 export default {
   data() {
     return {
@@ -52,8 +78,14 @@ export default {
         avatar: "",
         like_user_id: "",
         collection_user_id: ""
-      }
+      },
+      replyShow: false
     };
+  },
+  methods: {
+    closeReply() {
+      this.replyShow = false;
+    }
   },
   async created() {
     var { id } = this.$route.params;
@@ -113,8 +145,10 @@ export default {
     }
   },
   components: {
-    preview,
-    Avatar
+    preview: () => import("~/components/topic/content"),
+    Avatar,
+    Reply,
+    CommentContent
   }
 };
 </script>
@@ -135,6 +169,7 @@ export default {
   }
   .category-button {
     display: flex;
+    justify-content: flex-end;
     align-items: center;
     padding-top: 14px;
     padding-bottom: 5px;
@@ -153,7 +188,6 @@ export default {
   .mian-content {
     margin-top: 10px;
     padding-bottom: 20px;
-    margin-bottom: 20px;
     border-top: 1px solid #e4e4e4;
     border-bottom: 1px solid #e4e4e4;
     display: flex;
@@ -162,6 +196,8 @@ export default {
     .right {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      margin-left: 14px;
       .top {
         display: flex;
         align-items: center;
@@ -184,15 +220,38 @@ export default {
           color: #c1c1c1;
         }
         div {
+          margin-right: 20px;
+          cursor: pointer;
           span:nth-child(1) {
-            cursor: pointer;
             margin-right: 5px;
           }
           span:nth-child(2) {
             font-size: 12px;
-            margin-right: 30px;
           }
         }
+        div:last-child {
+          margin-right: 0px;
+        }
+      }
+    }
+  }
+  .reply {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .wrp {
+      width: 78px;
+      border-radius: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #42b983;
+      cursor: pointer;
+      padding: 4px 5px;
+      span {
+        font-size: 20px;
+        color: #fff;
       }
     }
   }

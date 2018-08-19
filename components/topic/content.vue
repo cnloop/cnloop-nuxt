@@ -1,11 +1,11 @@
 <template>
-    <div class="preview">
-        <div class="wrp">
-            <no-ssr>
-                <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
-            </no-ssr>
-        </div>
+  <div class="preview">
+    <div class="wrp">
+      <no-ssr>
+        <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
+      </no-ssr>
     </div>
+  </div>
 </template>
 <script>
 export default {
@@ -18,11 +18,6 @@ export default {
       isBoxShadow: false,
       codeStyle: "xcode"
     };
-  },
-  methods: {
-    close() {
-      this.$emit("closePreview");
-    }
   }
 };
 </script>
@@ -30,19 +25,16 @@ export default {
 
 <style lang="less">
 .preview {
-  width: 800px;
-  height: 100%;
+  width: 100%;
 }
 .preview .wrp {
   width: 100%;
   height: 100%;
   .markdown-body {
     z-index: 1;
-    border-radius: 5px;
     height: 100%;
     .v-note-panel {
       border: none;
-      border-radius: 5px;
       .v-show-content {
         background-color: #fff !important;
         h1,

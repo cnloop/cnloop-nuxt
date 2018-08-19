@@ -40,7 +40,6 @@
 import LeaveMsg from "~/components/common/leave-msg";
 import LeaveIndex from "~/components/common/leave-index";
 import SaveTip from "~/components/common/save-tip";
-// import preview from "~/components/write/preview";
 
 export default {
   data() {
@@ -158,16 +157,12 @@ export default {
       var title = this.title;
       var content = this.content;
       var category = this.sel.text;
-      var user_id = this.$store.state.user.id;
-      console.log(title, content, category, user_id);
       if (title && content && category) {
         var result = await this.$http.post("/topic", {
           title,
           content,
-          category,
-          user_id
+          category
         });
-        console.log(result);
         if (result.data.code === 200) {
           localStorage.removeItem("cnloop-mkcontent");
           this.isLeaveIndex = true;

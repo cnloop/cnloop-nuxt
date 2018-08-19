@@ -1,32 +1,32 @@
 <template>
-    <div class="nav-middle">
-        <div class="wrp">
-            <div class="left">
-                <div class="category" @click.stop="showCategory($event)">
-                    <div class="left">
-                        <span :style="{'background-color':sel.bgc}"></span>
-                        <span>{{sel.text}}</span>
-                    </div>
-                    <span class="triangle" v-rotate ref="triangle"></span>
-                    <div class="samllCategory" v-show="this.isShow">
-                        <div class="item" v-for="item in smallSel" :key="item.text" @click.stop="selectCategory(item)">
-                            <span :style="{'background-color':item.bgc}"></span>
-                            <span>{{item.text}}</span>
-                        </div>
-                    </div>
-                </div>
-                <a class="home" href="#" :class="{changeClass:'home'===routerQuery}" @click.prevent="toNewOrHot('home')">HOME</a>
-                <a class="new" href="#" :class="{changeClass:'new'===routerQuery}" @click.prevent="toNewOrHot('new')">NEW</a>
-                <a class="hot" href="#" :class="{changeClass:'hot'===routerQuery}" @click.prevent="toNewOrHot('hot')">HOT</a>
+  <div class="nav-middle">
+    <div class="wrp">
+      <div class="left">
+        <div class="category" @click.stop="showCategory($event)">
+          <div class="left">
+            <span :style="{'background-color':sel.bgc}"></span>
+            <span>{{sel.text}}</span>
+          </div>
+          <span class="triangle" v-rotate ref="triangle"></span>
+          <div class="samllCategory" v-show="this.isShow">
+            <div class="item" v-for="item in smallSel" :key="item.text" @click.stop="selectCategory(item)">
+              <span :style="{'background-color':item.bgc}"></span>
+              <span>{{item.text}}</span>
             </div>
-            <div class="right" v-show="$store.state.user">
-                <nuxt-link to="/write">
-                    <span>+</span>
-                    <span>Create Topic</span>
-                </nuxt-link>
-            </div>
+          </div>
         </div>
+        <a class="home" href="#" :class="{changeClass:'home'===routerQuery}" @click.prevent="toNewOrHot('home')">HOME</a>
+        <a class="new" href="#" :class="{changeClass:'new'===routerQuery}" @click.prevent="toNewOrHot('new')">NEW</a>
+        <a class="hot" href="#" :class="{changeClass:'hot'===routerQuery}" @click.prevent="toNewOrHot('hot')">HOT</a>
+      </div>
+      <div class="right" v-show="$store.state.user">
+        <nuxt-link to="/write">
+          <span>+</span>
+          <span>Create Topic</span>
+        </nuxt-link>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 export default {
@@ -227,6 +227,7 @@ export default {
       width: 210px;
       background-color: #fff;
       box-shadow: 0px 1px 5px 0px #ccc;
+      z-index: 99;
       .item {
         display: flex;
         align-items: center;
