@@ -1,20 +1,19 @@
 <template>
-  <div class="pretopic">
-    <h2>文章</h2>
-    <div class="item" v-for="topic in topicsArr" :key="topic.id">
-      <!-- 标题 -->
-      <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
-      <div class="bottom">
-        <!-- 分类 -->
-        <div class="category">
-          <span :data-color="topic.category" v-colorFilterBackground></span>
-          <span>{{topic.category}}</span>
+    <div class="get-topics">
+        <div class="item" v-for="topic in topicsArr" :key="topic.id">
+            <!-- 标题 -->
+            <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
+            <div class="bottom">
+                <!-- 分类 -->
+                <div class="category">
+                    <span :data-color="topic.category" v-colorFilterBackground></span>
+                    <span>{{topic.category}}</span>
+                </div>
+                <!-- 修改时间 -->
+                <div class="time">修改时间：{{topic.updatedAt|dataFormat}}</div>
+            </div>
         </div>
-        <!-- 修改时间 -->
-        <div class="time">{{topic.updatedAt|dataFormat}}</div>
-      </div>
     </div>
-  </div>
 </template>
 <script>
 export default {
@@ -23,13 +22,17 @@ export default {
       topicsArr: ""
     };
   },
+  props: ["userId"],
   created() {
     this.loadData();
   },
   methods: {
     async loadData() {
       try {
-        var result = await this.$http.get("/topic/getTopicByDefaultUserId");
+        if (!this.userId) return;
+        var result = await this.$http.get(
+          `/topic/getTopicByUserId/${this.userId}`
+        );
         if (result.data.code == 200) {
           this.topicsArr = result.data.data;
         }
@@ -106,17 +109,8 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
-.pretopic {
-  h2 {
-    padding-bottom: 8px;
-    font-weight: 400;
-    margin-top: -5px;
-    letter-spacing: 2px;
-    border-bottom: 1px #e1e4e8 solid;
-  }
-  // 每一篇文章
+.get-topics {
   .item {
     display: flex;
     flex-direction: column;
@@ -159,3 +153,4 @@ export default {
   }
 }
 </style>
+

@@ -12,7 +12,7 @@ export const http = axios.create({
 
 
 http.interceptors.request.use(function (config) {
-  if (config.url !== '/login' && config.url !== '/register' && config.url !== '/captcha'&&config.url!=='/register/email') {
+  if (config.url !== '/login' && config.url !== '/register' && config.url !== '/captcha' && config.url !== '/register/email') {
     config.headers['Authorization'] = getToken()
   }
   return config

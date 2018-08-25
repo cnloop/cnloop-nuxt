@@ -1,7 +1,7 @@
 <template>
   <div class="topic">
     <div class="wrp">
-      <reply v-show="replyShow" :topicObj="topicObj" @closeReply='closeReply'></reply>
+      <reply style="z-index:200" v-show="replyShow" :topicObj="topicObj" @closeReply='closeReply'></reply>
       <div class="main">
         <!-- title -->
         <h1 class="title">{{topicObj.title}}</h1>
@@ -17,6 +17,7 @@
             <avatar color="#fff" :src="topicObj.avatar" :username="topicObj.username" :inline=false :size=43></avatar>
           </div>
           <div class="right">
+            <div class="mask"></div>
             <div class="top">
               <div class="user-name">{{topicObj.username}}</div>
               <span>{{topicObj.createdAt|dataFormat}}</span>
@@ -25,21 +26,25 @@
               <preview class="preview" :previewContent='topicObj.content'></preview>
             </no-ssr>
             <div class="bottom">
-              <div v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
+              <!-- 删除 -->
+              <div @click="showDeleteTopic" v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
                 <span class="iconfont">&#xe612;</span>
                 <span>delete</span>
               </div>
-              <div v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
+              <!-- 修改 -->
+              <div @click="$router.push(`/update/${$route.params.id}`)" v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
                 <span class="iconfont">&#xe738;</span>
                 <span>update</span>
               </div>
+              <!-- 点赞 -->
               <div>
-                <span class="iconfont">&#xe62e;</span>
-                <span></span>
+                <span :class="{ changeLikeColor:haveLike(topicObj.like_user_id) }" @click="insertTopicLike" class="iconfont">&#xe62e;</span>
+                <span :class="{ changeLikeColor:haveLike(topicObj.like_user_id) }">{{ showLikeCount(topicObj.like_user_id)}}</span>
               </div>
+              <!-- 收藏 -->
               <div>
-                <span class="iconfont">&#xe62a;</span>
-                <span></span>
+                <span :class="{ changeLikeColor:haveLike(topicObj.collection_user_id) }" @click="insertTopicCollection" class="iconfont">&#xe62a;</span>
+                <span :class="{ changeLikeColor:haveLike(topicObj.collection_user_id) }">{{showLikeCount(topicObj.collection_user_id)}}</span>
               </div>
             </div>
           </div>
@@ -47,14 +52,14 @@
         <!-- comment -->
         <comment-content :topicId="$route.params.id"></comment-content>
         <!-- reply button -->
-        <div class="reply"  v-if="$store.state.user">
+        <div class="reply" v-if="$store.state.user">
           <div class="wrp" @click="replyShow=true">
             <span class="iconfont">&#xe61a;</span>
             <span>Reply</span>
           </div>
         </div>
-
-        <h1 style="padding:100px"></h1>
+        <delete-topic :isLeaveIndex='isLeaveIndex' @deleteTopic='deleteTopic' @hideDeleteTips='hideDeleteTips'>确认删除吗？</delete-topic>
+        <div style="padding:100px"></div>
       </div>
     </div>
   </div>
@@ -63,6 +68,7 @@
 import Avatar from "vue-avatar";
 import Reply from "~/components/topic/reply";
 import CommentContent from "~/components/topic/comment-content";
+import DeleteTopic from "~/components/common/delete-topic";
 export default {
   data() {
     return {
@@ -79,22 +85,75 @@ export default {
         like_user_id: "",
         collection_user_id: ""
       },
-      replyShow: false
+      replyShow: false,
+      isLeaveIndex: false
     };
   },
   methods: {
     closeReply() {
       this.replyShow = false;
+    },
+    async loadTopicInfo() {
+      var { id } = this.$route.params;
+      try {
+        var result = await this.$http.get(`/topic/${id}`);
+        this.topicObj = result.data.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async insertTopicLike() {
+      var topic_id = this.$route.params.id;
+      try {
+        var result = await this.$http.post(`/topic/like/${topic_id}`);
+        if (result.data.code == 200) {
+          this.loadTopicInfo();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    showLikeCount(val) {
+      if (!val) return;
+      return val.split(",").length;
+    },
+    haveLike(val) {
+      if (!val) return false;
+      return val.indexOf(this.$store.state.user.id) >= 0;
+    },
+    async insertTopicCollection() {
+      var topic_id = this.$route.params.id;
+      try {
+        var result = await this.$http.post(`/topic/collection/${topic_id}`);
+        if (result.data.code == 200) {
+          this.loadTopicInfo();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    showDeleteTopic() {
+      this.isLeaveIndex = true;
+    },
+    hideDeleteTips() {
+      this.isLeaveIndex = false;
+    },
+    // 删除文章
+    async deleteTopic() {
+      var topic_id = this.$route.params.id;
+      try {
+        var result = await this.$http.delete(`/topic/delete/${topic_id}`);
+        if (result.data.code == 200) {
+          this.isLeaveIndex = false;
+          this.$router.push("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
-  async created() {
-    var { id } = this.$route.params;
-    try {
-      var result = await this.$http.get(`/topic/${id}`);
-      this.topicObj = result.data.data;
-    } catch (err) {
-      console.log(err);
-    }
+  created() {
+    this.loadTopicInfo();
   },
   directives: {
     colorFilterBackground: {
@@ -148,7 +207,8 @@ export default {
     preview: () => import("~/components/topic/content"),
     Avatar,
     Reply,
-    CommentContent
+    CommentContent,
+    DeleteTopic
   }
 };
 </script>
@@ -194,10 +254,29 @@ export default {
     justify-content: space-between;
     padding-top: 15px;
     .right {
+      position: relative;
       display: flex;
       flex-direction: column;
       width: 100%;
       margin-left: 14px;
+      .mask {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 99;
+        // background-color: rgba(216, 242, 254, 0.7);
+        animation: gun 2.5s forwards ease-in;
+      }
+      @keyframes gun {
+        0% {
+          background-color: rgba(216, 242, 254, 0.8);
+        }
+        100% {
+          background-color: rgba(255, 255, 255, 0);
+        }
+      }
       .top {
         display: flex;
         align-items: center;
@@ -212,12 +291,16 @@ export default {
         margin-top: 14px;
       }
       .bottom {
+        z-index: 100;
         display: flex;
         justify-content: flex-end;
         align-items: center;
         span {
           font-size: 20px;
           color: #c1c1c1;
+        }
+        .changeLikeColor {
+          color: #f84134;
         }
         div {
           margin-right: 20px;

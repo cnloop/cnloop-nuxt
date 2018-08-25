@@ -1,7 +1,7 @@
 <template>
   <div class="write">
     <leave-msg @closeMsg="closeMsg" :isMsgShow="isMsgShow">确认离开吗？</leave-msg>
-    <leave-index @closeLeaveIndex="closeLeaveIndex" :isLeaveIndex="isLeaveIndex">上传成功，即将离开</leave-index>
+    <leave-index @closeLeaveIndex="closeLeaveIndex" :isLeaveIndex="isLeaveIndex">修改成功，即将离开</leave-index>
     <preview @closePreview='closePreview' :isPreview='isPreview' :previewContent='content'></preview>
     <save-tip @closeSaveTip="closeSaveTip" :isSaveTip="isSaveTip">内容已保存到本地</save-tip>
     <div class="wrp">
@@ -30,7 +30,6 @@
       </div>
       <div class="submit">
         <span @click="preview">预览</span>
-        <span @click="save">保存</span>
         <span @click="submit">提交</span>
       </div>
     </div>
@@ -40,6 +39,8 @@
 import LeaveMsg from "~/components/common/leave-msg";
 import LeaveIndex from "~/components/common/leave-index";
 import SaveTip from "~/components/common/save-tip";
+
+import preview from "~/components/write/preview";
 
 export default {
   data() {
@@ -99,23 +100,33 @@ export default {
     };
   },
   mounted() {
-    this.close();
-    this.getSave();
+    this.loadData();
   },
   methods: {
+    async loadData() {
+      var topic_id = this.$route.params.id;
+      try {
+        var result = await this.$http.get(
+          `/topic/getTopicToUpdate/${topic_id}`
+        );
+        if (result.data.code == 200) {
+          this.title = result.data.data.title;
+          this.content = result.data.data.content;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
     closeMsg(str) {
       if (str === "yes") {
         this.isKip = true;
-        this.$router.push(this.isKipUrl);
+        window.location.href=this.isKipUrl
       }
       this.isMsgShow = false;
     },
     closeLeaveIndex() {
       this.isLeaveIndex = false;
-      window.onbeforeunload = null;
       window.location.href = "/";
-
-      // this.$router.push("/");
     },
     closeSaveTip() {
       this.isSaveTip = false;
@@ -136,38 +147,26 @@ export default {
         parentClassName: event.target.parentNode.className
       });
     },
-    close() {
-      window.onbeforeunload = function(ev) {
-        return true;
-      };
-    },
     preview() {
       this.isPreview = true;
-    },
-    save() {
-      localStorage.setItem("cnloop-mkcontent", this.content);
-      this.isSaveTip = true;
-    },
-    getSave() {
-      var content = `${localStorage.getItem("cnloop-mkcontent")}`;
-      if (content === "null" || !content) return;
-      this.content = content;
     },
     async submit() {
       var title = this.title;
       var content = this.content;
       var category = this.sel.text;
       if (title && content && category) {
-        var result = await this.$http.post("/topic", {
-          title,
-          content,
-          category
-        });
+        var topic_id = this.$route.params.id;
+        var result = await this.$http.patch(
+          `/topic/updateTopicById/${topic_id}`,
+          {
+            title,
+            content,
+            category
+          }
+        );
         if (result.data.code === 200) {
-          localStorage.removeItem("cnloop-mkcontent");
           this.isLeaveIndex = true;
           setTimeout(() => {
-            window.onbeforeunload = null;
             this.isLeaveIndex = false;
             window.location.href = "/";
           }, 500);
@@ -198,13 +197,14 @@ export default {
     LeaveMsg,
     LeaveIndex,
     SaveTip,
-    preview: () => import("~/components/write/preview")
+    preview: preview
   },
-  beforeDestroy() {
-    window.onbeforeunload = null;
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.isKipUrl = from.path;
+    });
   },
   beforeRouteLeave(to, from, next) {
-    this.isKipUrl = to.path;
     if (this.isKip) {
       next();
     } else {

@@ -1,10 +1,10 @@
 <template>
-    <div class="index-show">
-        <div class="wrp">
-            <category></category>
-            <overview></overview>
-        </div>
+  <div class="index-show">
+    <div class="wrp">
+      <category></category>
+      <overview></overview>
     </div>
+  </div>
 </template>
 <script>
 import category from "~/components/index/category";

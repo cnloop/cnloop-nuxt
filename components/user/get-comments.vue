@@ -1,29 +1,28 @@
 <template>
-  <div class="precomment">
-    <h2>评论</h2>
-    <div class="item" v-for="comment in commentArr" :key="comment.createdAt">
-      <!-- 左边内容：头像 -->
-      <div class="left">
-        <avatar color="#fff" :src="comment.avatar" :username="comment.username" :inline=false :size=50></avatar>
-      </div>
-      <!-- 右边内容 -->
-      <div class="right">
-        <!-- 第一行：姓名、发表日期 -->
-        <div>
-          <span class="username">{{comment.username}}</span>
-          <span class="createdAt">{{comment.createdAt|dataFormat}}</span>
+    <div class="get-comments">
+        <div class="item" v-for="comment in commentArr" :key="comment.createdAt">
+            <!-- 左边内容：头像 -->
+            <div class="left">
+                <avatar color="#fff" :src="comment.avatar" :username="comment.username" :inline=false :size=50></avatar>
+            </div>
+            <!-- 右边内容 -->
+            <div class="right">
+                <!-- 第一行：姓名、发表日期 -->
+                <div>
+                    <span class="username">{{comment.username}}</span>
+                    <span class="createdAt">发表时间：{{comment.createdAt|dataFormat}}</span>
+                </div>
+                <!-- 第二行：评论内容 -->
+                <div>
+                    <a :href="`/topic/${comment.topic_id}#${comment.id}`">{{`${comment.content}...`}}</a>
+                </div>
+                <!-- 第三行：评论目标 -->
+                <div>
+                    <span>{{getTargetContent(comment.targetContent,comment.targetCategory)}}</span>
+                </div>
+            </div>
         </div>
-        <!-- 第二行：评论内容 -->
-        <div>
-          <a :href="`/topic/${comment.topic_id}#${comment.id}`">{{`${comment.content}...`}}</a>
-        </div>
-        <!-- 第三行：评论目标 -->
-        <div>
-          <span>{{getTargetContent(comment.targetContent,comment.targetCategory)}}</span>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 <script>
 import Avatar from "vue-avatar";
@@ -33,15 +32,16 @@ export default {
       commentArr: ""
     };
   },
+  props: ["userId"],
   created() {
     this.loadData();
   },
   methods: {
     async loadData() {
+      if (!this.userId) return;
       try {
-        var result = await this.$http.get("/comment/getCommentByDefaultUserId");
+        var result = await this.$http.get(`/comment/getCommentByUserId/${this.userId}`);
         if (result.data.code == 200) {
-          console.dir(result.data.data);
           this.commentArr = result.data.data;
         }
       } catch (err) {
@@ -50,9 +50,9 @@ export default {
     },
     getTargetContent(vals, categry) {
       if (categry == "son") {
-        return `[ 回复评论 ]：${vals}`;
+        return `[ 回复评论 ]：${vals}...`;
       } else {
-        return `[ 回复标题 ]：${vals}...`;
+        return `[ 回复标题 ]：${vals}`;
       }
     }
   },
@@ -91,14 +91,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.precomment {
-  h2 {
-    padding-bottom: 8px;
-    font-weight: 400;
-    margin-top: -5px;
-    letter-spacing: 2px;
-    border-bottom: 1px #e1e4e8 solid;
-  }
+.get-comments {
   .item {
     display: flex;
     justify-content: space-between;
@@ -124,7 +117,7 @@ export default {
         }
         .createdAt {
           color: #999;
-          font-size: 14px;
+          font-size: 12px;
         }
       }
       div:nth-child(2) {

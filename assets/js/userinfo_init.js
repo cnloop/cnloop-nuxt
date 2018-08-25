@@ -26,6 +26,6 @@ export function removeUserInfo() {
   window.localStorage.removeItem(userInfoKey)
 }
 
-export function skipHome(){
-    window.location.href='/'
+export function skipHome() {
+  window.location.href = '/login'
 }

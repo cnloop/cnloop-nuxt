@@ -5,7 +5,7 @@
       <span>活动</span>
     </div>
     <ul class="content">
-      <li :data-color="topic.category" v-colorFilterLine v-for="topic in arr_topics" :key="topic.id">
+      <li :data-color="topic.category" v-for="topic in arr_topics" :key="topic.id">
         <div class="left">
           <div>
             <avatar color="#fff" :src="topic.avatar" :username="topic.username" :inline=false :size=53></avatar>
@@ -20,10 +20,10 @@
         </div>
         <div class="right">
           <div class="top">
-            <span>{{topic.comment_count?topic.comment_count:0}}</span>
+            <span>{{getCommentResult(topic.result_count)}}</span>
           </div>
           <div class="bottom">
-            <span>{{topic.updatedAt|dataFormat}}</span>
+            <span>{{topic.result_time|dataFormat}}</span>
           </div>
         </div>
       </li>
@@ -45,33 +45,22 @@ export default {
     try {
       var result = await this.$http.get("/topic/show/overview");
       this.arr_topics = result.data.data;
-      console.log(this.arr_topics);
+      console.log(result);
+      console.dir(this.arr_topics);
     } catch (err) {
       console.log(err);
+    }
+  },
+  methods: {
+    getCommentResult(val) {
+      if (!val) return 0;
+      return val;
     }
   },
   components: {
     Avatar
   },
   directives: {
-    colorFilterLine: {
-      inserted: function(el) {
-        var value = el.dataset.color;
-        if (!value) return "";
-        if (value === "General Discussion")
-          return (el.style.borderLeft = "4px solid rgb(18, 168, 157)");
-        if (value == "Get Help")
-          return (el.style.borderLeft = "4px solid rgb(101, 45, 144)");
-        if (value == "Show & Vue.js")
-          return (el.style.borderLeft = "4px solid rgb(247, 148, 29)");
-        if (value == "Show & CSS")
-          return (el.style.borderLeft = "4px solid rgb(191, 30, 46)");
-        if (value == "Show & JS")
-          return (el.style.borderLeft = "4px solid rgb(179, 181, 180)");
-        if (value == "Show & Node.js")
-          return (el.style.borderLeft = "4px solid rgb(37, 170, 226)");
-      }
-    },
     colorFilterBackground: {
       inserted: function(el) {
         var value = el.dataset.color;

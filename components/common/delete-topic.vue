@@ -3,14 +3,13 @@
     <div class="content">
       <div class="top">
         <span>消息</span>
-        <span @click="close()">×</span>
+        <span @click="hideTips">×</span>
       </div>
       <div class="center">
         <slot>消息内容...</slot>
       </div>
       <div class="down">
-        <span @click="close()">确认</span>
-        <!-- <span @click="close('no')">取消</span> -->
+        <span @click="deleted">确认</span>
       </div>
     </div>
   </div>
@@ -19,8 +18,11 @@
 export default {
   props: ["isLeaveIndex"],
   methods: {
-    close() {
-      this.$emit("closeLeaveIndex");
+    deleted() {
+      this.$emit("deleteTopic");
+    },
+    hideTips() {
+      this.$emit("hideDeleteTips");
     }
   }
 };
@@ -29,6 +31,7 @@ export default {
 <style lang="less" scoped>
 .leave-tip {
   position: fixed;
+  z-index: 150;
   left: 0px;
   top: 0px;
   width: 100%;

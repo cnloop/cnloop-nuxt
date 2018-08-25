@@ -1,7 +1,8 @@
 <template>
   <div class="topic-comment" v-if="isShow">
+    <a :href="$route.hash" v-aotuClick></a>
     <reply v-show="replyShow" :parentComment='parentComment' @closeReply='closeReply'></reply>
-    <div class="main-content" v-for="comment in commentData" :key="comment.id">
+    <div :id="comment.id" class="main-content" v-for="comment in commentData" :key="comment.id">
       <!-- avatar -->
       <div class="left">
         <avatar color="#fff" :src="comment.avatar" :username="comment.username" :inline=false :size=43></avatar>
@@ -15,15 +16,16 @@
           <preview class="preview" :previewContent='comment.content'></preview>
         </no-ssr>
         <div class="bottom">
-
+          <!-- 一级评论 -->
           <div v-showCommentSon v-show="comment.comment_son_info" class="showCommentSon">
             <span class="show-number">{{getReplyCount(comment.comment_son_info)}}</span>
             <span class="show-reply">回复</span>
             <span class="iconfont">&#xe8f2;</span>
           </div>
           <div>
-            <span class="iconfont">&#xe62e;</span>
-            <span>333</span>
+            <!-- 小手 -->
+            <span :class="{ changeLikeColor:haveCommentLike(comment.parent_comment_sets) }" @click="insertCommentLike(comment.id)" class="iconfont">&#xe62e;</span>
+            <span :class="{ changeLikeColor:haveCommentLike(comment.parent_comment_sets) }">{{getCommentLikeCount(comment.parent_comment_sets)}}</span>
           </div>
           <div v-if="$store.state.user">
             <span @click="openReply(comment.username,comment.id)" class="iconfont">&#xe60d;</span>
@@ -47,17 +49,16 @@
               <no-ssr>
                 <preview class="commentSon-preview" :previewContent='v.content'></preview>
               </no-ssr>
-
+              <!-- 二级评论小手图标 -->
               <div class="bottom">
                 <div>
-                  <span class="iconfont">&#xe62e;</span>
-                  <span class='numberShow'>333</span>
+                  <span :class="{ changeLikeColor:haveCommentLike(v.son_like_sets) }" @click="insertCommentSonLike(v.id)" class="iconfont">&#xe62e;</span>
+                  <span :class="{ changeLikeColor:haveCommentLike(v.son_like_sets) }" class='numberShow'>{{getCommentLikeCount(v.son_like_sets)}}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -86,6 +87,7 @@ export default {
         var result = await this.$http.get(`/comment/list/${_this.topicId}`);
         if (result.data.code == 200) {
           this.commentData = result.data.data;
+          console.log(this.commentData);
           this.isShow = true;
         }
       } catch (err) {
@@ -114,24 +116,65 @@ export default {
     },
     splitData(values) {
       if (!values) return;
-      var arr = values.split("|");
+      var arr = values.split("|||");
       var newArr = [];
       arr.forEach(element => {
         if (element) {
-          var sonArr = element.split(",");
-          if (sonArr.length >= 7) sonArr.shift();
+          var sonArr = element.split("&&");
           var obj = {
-            avatar: sonArr[0],
-            username: sonArr[1],
-            id: sonArr[2],
-            content: sonArr[3],
-            user_id: sonArr[4],
-            createdAt: sonArr[5]
+            avatar: sonArr[0] == "%empty%" ? "" : sonArr[0],
+            username: sonArr[1] == "%empty%" ? "" : sonArr[1],
+            id: sonArr[2] == "%empty%" ? "" : sonArr[2],
+            content: sonArr[3] == "%empty%" ? "" : sonArr[3],
+            user_id: sonArr[4] == "%empty%" ? "" : sonArr[4],
+            createdAt: sonArr[5] == "%empty%" ? "" : sonArr[5],
+            son_like_sets: sonArr[6] == "%empty%" ? "" : sonArr[6]
           };
           newArr.push(obj);
         }
       });
       return newArr;
+    },
+    async insertCommentLike(commentId) {
+      if (!commentId) return;
+      try {
+        var result = await this.$http.post(
+          `/comment/like_comment/${commentId}`
+        );
+        if (result.data.code == 200) {
+          this.loadData();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async insertCommentSonLike(commentSonId) {
+      if (!commentSonId) return;
+      try {
+        var result = await this.$http.post(
+          `/comment/like_comment_son/${commentSonId}`
+        );
+        if (result.data.code == 200) {
+          this.loadData();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    getCommentLikeCount(vals) {
+      if (!vals) return;
+      var arr = vals.split(",");
+      var newArr = [];
+      arr.forEach(element => {
+        if (element) {
+          newArr.push(element);
+        }
+      });
+      return newArr.length;
+    },
+    haveCommentLike(vals) {
+      if (!vals) return false;
+      return vals.indexOf(this.$store.state.user.id) >= 0;
     }
   },
   directives: {
@@ -162,6 +205,14 @@ export default {
           replyCount.parentNode.showCommentSon = false;
           replyCount.style.transform = "rotateZ(0deg)";
         };
+      }
+    },
+    aotuClick: {
+      inserted: function(el, binding, vnode) {
+        var hash = vnode.context.$route.hash;
+        if (hash) {
+          el.click();
+        }
       }
     }
   },
@@ -264,7 +315,9 @@ export default {
             transition: all 0.2s;
           }
         }
-
+        .changeLikeColor {
+          color: #03a9f4;
+        }
         span {
           font-size: 20px;
           color: #c1c1c1;
@@ -322,7 +375,7 @@ export default {
           display: flex;
           justify-content: space-between;
           border-bottom: 1px solid #e9e9e9;
-          padding-bottom: 25px;
+          padding-bottom: 12px;
           .commentSon-right {
             display: flex;
             flex-direction: column;
@@ -355,6 +408,9 @@ export default {
               }
               .numberShow {
                 font-size: 12px;
+              }
+              .changeLikeColor {
+                color: #03a9f4;
               }
             }
           }

@@ -1,16 +1,20 @@
 <template>
-    <div class="search">
-        <div class="wrp">
-            <div class="top">
-                <input type="text" placeholder="搜索...">
-                <span class="iconfont">&#xe651;</span>
-            </div>
-            <div class="bottom"></div>
-        </div>
+  <div class="search">
+    <div class="wrp">
+      <div class="top">
+        <input type="text" placeholder="搜索...">
+        <span class="iconfont">&#xe651;</span>
+      </div>
+      <div class="bottom"></div>
     </div>
+  </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  }
+};
 </script>
 <style lang="less" scoped>
 .search {

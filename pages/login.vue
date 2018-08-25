@@ -55,6 +55,12 @@ export default {
       }
     };
   },
+  beforeRouteEnter(to, from, next) {
+    // ...
+    console.log(to);
+    console.log(from);
+    next();
+  },
   methods: {
     trim(str) {
       return str.replace(/(^\s*)|(\s*$)/g, "");
@@ -80,7 +86,7 @@ export default {
         this.isModal = false;
         if (result.data.code === 200) {
           saveUserInfo(result.data.data);
-          this.$store.commit('changeUser',result.data.data.user)
+          this.$store.commit("changeUser", result.data.data.user);
           this.$router.push("/");
         } else {
           this.alertMsg = result.data.msg;

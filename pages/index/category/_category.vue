@@ -12,23 +12,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>V-for with simple arrays: what key to use?</td>
+        <tr v-for="val in getData" :key="val.id">
           <td>
-            <span></span>
-            <span>Get Help</span>
+            <a :href="'/topic/'+val.id">{{val.title}}</a>
           </td>
           <td>
-            <avatar color="#fff" src="" username="吴下" :inline=true :size=25 class="td-ava"></avatar>
-            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-            <avatar color="#fff" username="Jane Doe" :inline=true :size=25 class="td-ava"></avatar>
-            <avatar color="#fff" username="Jane Doe HE" :inline=true :size=25 class="td-ava"></avatar>
+            <span :data-color="val.category" v-colorFilterBackground></span>
+            <span>{{val.category}}</span>
           </td>
-          <td>10</td>
+          <td>
+            <avatar v-for="(v,key) in getUserInfo(val.result_user_info)" :key="key" color="#fff" :src="v.avatar" :username="v.username" :inline=true :size=25 class="td-ava"></avatar>
+          </td>
+          <td>{{val.result_count?val.result_count:0}}</td>
           <td>31.3K</td>
-          <td>4月20日</td>
+          <td>{{val.result_time|dataFormat}}</td>
         </tr>
       </tbody>
     </table>
@@ -39,15 +36,116 @@ import Avatar from "vue-avatar";
 export default {
   data() {
     return {
-      params: "",
-      query: ""
+      category: "",
+      newOrhot: "",
+      getData: ""
     };
   },
   created() {
-    this.params = this.$route.params.category
-      ? this.$route.params.category
-      : "general";
-    this.query = this.$route.query ? this.$route.query : "new";
+    this.loadData();
+  },
+  methods: {
+    async loadData() {
+      this.category = this.$route.params.category
+        ? this.$route.params.category
+        : "general";
+      this.newOrhot = this.$route.query ? this.$route.query.newOrhot : "new";
+      if (!this.category) return;
+      if (!this.newOrhot) return;
+      try {
+        var result = await this.$http.get(
+          `/topic/list?category=${this.category}&newOrhot=${this.newOrhot}`
+        );
+        if (result.data.code == 200) {
+          this.getData = result.data.data;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    uniqueArr(arr) {
+      var hash = [];
+      for (var i = 0; i < arr.length; i++) {
+        if (hash.indexOf(arr[i]) == -1) {
+          hash.push(arr[i]);
+        }
+      }
+      return hash;
+    },
+    getUserInfo(val) {
+      if (!val) return;
+      var arr1 = val.split("|||");
+      var arr2 = this.uniqueArr(arr1);
+      var arr3 = [];
+      arr2.forEach(element => {
+        if (element) {
+          var arr4 = element.split("&&");
+          var obj = {
+            avatar: arr4[0] == "%empty%" ? "" : arr4[0],
+            username: arr4[1] == "%empty%" ? "" : arr4[1]
+          };
+          if (obj.username) {
+            arr3.push(obj);
+          }
+        }
+      });
+      return arr3.slice(0, 10);
+    }
+  },
+  filters: {
+    dataFormat(value) {
+      if (!value) return "";
+      var y = new Date(value).getFullYear();
+      var m = new Date(value).getMonth() + 1;
+      var d = new Date(value).getDate();
+      value = parseInt(value);
+      var dateDiff = new Date().getTime() - value;
+      var oneYear = 365 * 24 * 3600 * 1000;
+      var oneMonth = 30 * 24 * 3600 * 1000;
+      var oneDay = 24 * 3600 * 1000;
+      var oneHour = 3600 * 1000;
+      var oneMin = 60 * 1000;
+      if (dateDiff / oneYear >= 1) {
+        return `${y}年${m}月${d}日`;
+      } else if (dateDiff / oneMonth >= 1) {
+        return `${m}月${d}日`;
+      } else if (dateDiff / oneDay >= 1) {
+        return `${Math.floor(dateDiff / oneDay)}天前`;
+      } else if (dateDiff / oneHour >= 1) {
+        return `${Math.floor(dateDiff / oneHour)}小时前`;
+      } else if (dateDiff / oneMin >= 1) {
+        return `${Math.floor(dateDiff / oneMin)}分钟前`;
+      } else {
+        return "刚刚";
+      }
+    }
+  },
+  directives: {
+    colorFilterBackground: {
+      inserted: function(el) {
+        var value = el.dataset.color;
+        if (!value) return "";
+        if (value === "General Discussion")
+          return (el.style.backgroundColor = "rgb(18, 168, 157)");
+        if (value == "Get Help")
+          return (el.style.backgroundColor = "rgb(101, 45, 144)");
+        if (value == "Show & Vue.js")
+          return (el.style.backgroundColor = "rgb(247, 148, 29)");
+        if (value == "Show & CSS")
+          return (el.style.backgroundColor = "rgb(191, 30, 46)");
+        if (value == "Show & JS")
+          return (el.style.backgroundColor = "rgb(179, 181, 180)");
+        if (value == "Show & Node.js")
+          return (el.style.backgroundColor = "rgb(37, 170, 226)");
+      }
+    }
+  },
+  watch: {
+    $route: {
+      handler: function(val) {
+        this.loadData();
+      }
+    }
   },
   components: {
     Avatar
