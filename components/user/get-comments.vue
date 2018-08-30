@@ -14,7 +14,7 @@
                 </div>
                 <!-- 第二行：评论内容 -->
                 <div>
-                    <a :href="`/topic/${comment.topic_id}#${comment.id}`">{{`${comment.content}...`}}</a>
+                    <a :href="`/topic?id=${comment.topic_id}#${comment.id}`">{{`${comment.content}...`}}</a>
                 </div>
                 <!-- 第三行：评论目标 -->
                 <div>

@@ -1,8 +1,18 @@
 <template>
-    <div class="prelike">
-        <h2>点赞</h2>
-    </div>
+  <div class="prelike">
+    <h2>点赞</h2>
+    <get-like></get-like>
+  </div>
 </template>
+<script>
+import GetLike from "~/components/personal/get-like";
+export default {
+  components: {
+    GetLike
+  }
+};
+</script>
+
 <style lang="less" scoped>
 .prelike {
   h2 {

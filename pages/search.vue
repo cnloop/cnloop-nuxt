@@ -2,17 +2,56 @@
   <div class="search">
     <div class="wrp">
       <div class="top">
-        <input type="text" placeholder="搜索...">
-        <span class="iconfont">&#xe651;</span>
+        <input type="text" v-inputEnter placeholder="搜索..." v-model="searchKey">
+        <span class="iconfont" @click="search">&#xe651;</span>
       </div>
-      <div class="bottom"></div>
+      <div class="bottom">
+        <get-search-item :toItemKeyWorld="toItemKeyWorld" :search="search" v-for="search in searchArr" :key="search.id"></get-search-item>
+      </div>
     </div>
   </div>
 </template>
 <script>
+import GetSearchItem from "~/components/search/get-search-item";
 export default {
   data() {
-    return {};
+    return {
+      searchKey: "",
+      toItemKeyWorld: "",
+      searchArr: ""
+    };
+  },
+  methods: {
+    async search() {
+      this.toItemKeyWorld = this.searchKey;
+      try {
+        var result = await this.$http.get(
+          `/search/getResult/${this.searchKey}`
+        );
+        if (result.data.code == 200) {
+          this.searchArr = result.data.data;
+        } else {
+          this.searchArr = "";
+        }
+      } catch (err) {
+          this.searchArr = "";
+        console.log("Loacl app is crash...");
+      }
+    }
+  },
+  directives: {
+    inputEnter: {
+      inserted: function(el, binding, vnode) {
+        el.onkeyup = function() {
+          if (window.event.keyCode == 13) {
+            vnode.context.search();
+          }
+        };
+      }
+    }
+  },
+  components: {
+    GetSearchItem
   }
 };
 </script>
@@ -46,6 +85,9 @@ export default {
         color: #fff;
         border-radius: 2px;
       }
+    }
+    .bottom {
+      margin-top: 30px;
     }
   }
 }

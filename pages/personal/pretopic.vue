@@ -3,7 +3,7 @@
     <h2>文章</h2>
     <div class="item" v-for="topic in topicsArr" :key="topic.id">
       <!-- 标题 -->
-      <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
+      <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
       <div class="bottom">
         <!-- 分类 -->
         <div class="category">

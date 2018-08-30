@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import ItemFollowers from "~/components/user/item-followers";
+import ItemFollowers from "~/components/personal/item-followers";
 export default {
   props: ["userId"],
   data() {
@@ -25,8 +25,9 @@ export default {
     async loadData() {
       try {
         var result = await this.$http.get(
-          `/follow/getTargetFollowersList/${this.userId}`
+          `/follow/getTargetFollowersListByDefault`
         );
+        // console.log(result);
         if (result.data.code == 200) {
           this.followersArr = result.data.data;
         }

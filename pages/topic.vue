@@ -32,7 +32,7 @@
                 <span>delete</span>
               </div>
               <!-- 修改 -->
-              <div @click="$router.push(`/update/${$route.params.id}`)" v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
+              <div @click="$router.push(`/update?id=${$route.query.id}`)" v-if="$store.state.user.id&&$store.state.user.id==topicObj.user_id">
                 <span class="iconfont">&#xe738;</span>
                 <span>update</span>
               </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
         <!-- comment -->
-        <comment-content :topicId="$route.params.id"></comment-content>
+        <comment-content :topicId="$route.query.id"></comment-content>
         <!-- reply button -->
         <div class="reply" v-if="$store.state.user">
           <div class="wrp" @click="replyShow=true">
@@ -69,6 +69,7 @@ import Avatar from "vue-avatar";
 import Reply from "~/components/topic/reply";
 import CommentContent from "~/components/topic/comment-content";
 import DeleteTopic from "~/components/common/delete-topic";
+import Preview from "~/components/topic/content";
 export default {
   data() {
     return {
@@ -89,12 +90,15 @@ export default {
       isLeaveIndex: false
     };
   },
+  created() {
+    this.loadTopicInfo();
+  },
   methods: {
     closeReply() {
       this.replyShow = false;
     },
     async loadTopicInfo() {
-      var { id } = this.$route.params;
+      var { id } = this.$route.query;
       try {
         var result = await this.$http.get(`/topic/${id}`);
         this.topicObj = result.data.data;
@@ -103,9 +107,9 @@ export default {
       }
     },
     async insertTopicLike() {
-      var topic_id = this.$route.params.id;
+      var { id } = this.$route.query;
       try {
-        var result = await this.$http.post(`/topic/like/${topic_id}`);
+        var result = await this.$http.post(`/topic/like/${id}`);
         if (result.data.code == 200) {
           this.loadTopicInfo();
         }
@@ -122,9 +126,10 @@ export default {
       return val.indexOf(this.$store.state.user.id) >= 0;
     },
     async insertTopicCollection() {
-      var topic_id = this.$route.params.id;
+      var { id } = this.$route.query;
+
       try {
-        var result = await this.$http.post(`/topic/collection/${topic_id}`);
+        var result = await this.$http.post(`/topic/collection/${id}`);
         if (result.data.code == 200) {
           this.loadTopicInfo();
         }
@@ -140,9 +145,10 @@ export default {
     },
     // 删除文章
     async deleteTopic() {
-      var topic_id = this.$route.params.id;
+      var { id } = this.$route.query;
+
       try {
-        var result = await this.$http.delete(`/topic/delete/${topic_id}`);
+        var result = await this.$http.delete(`/topic/delete/${id}`);
         if (result.data.code == 200) {
           this.isLeaveIndex = false;
           this.$router.push("/");
@@ -151,9 +157,6 @@ export default {
         console.log(err);
       }
     }
-  },
-  created() {
-    this.loadTopicInfo();
   },
   directives: {
     colorFilterBackground: {
@@ -204,7 +207,8 @@ export default {
     }
   },
   components: {
-    preview: () => import("~/components/topic/content"),
+    // preview: () => import("~/components/topic/content"),
+    Preview,
     Avatar,
     Reply,
     CommentContent,
@@ -265,8 +269,7 @@ export default {
         top: 0px;
         width: 100%;
         height: 100%;
-        z-index: 99;
-        // background-color: rgba(216, 242, 254, 0.7);
+        z-index: 90;
         animation: gun 2.5s forwards ease-in;
       }
       @keyframes gun {
@@ -291,7 +294,7 @@ export default {
         margin-top: 14px;
       }
       .bottom {
-        z-index: 100;
+        z-index: 98;
         display: flex;
         justify-content: flex-end;
         align-items: center;

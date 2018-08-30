@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     async getUserInfo() {
-      this.userId = this.$route.params.id;
+      this.userId = this.$route.query.id;
       try {
         var result = await this.$http.get(
           `/user/getUserInfoByUserId/${this.userId}`
@@ -66,7 +66,7 @@ export default {
         var flag = 0;
         result.data.data.forEach(ele => {
           if (ele) {
-            if (ele.following_user_id == this.$route.params.id) {
+            if (ele.following_user_id == this.$route.query.id) {
               return (flag = 1);
             }
           }
@@ -83,7 +83,7 @@ export default {
     async changeFollowingState() {
       try {
         var result = await this.$http.post("/follow", {
-          following_user_id: this.$route.params.id
+          following_user_id: this.$route.query.id
         });
         if (result.data.code == 200) {
           this.checkIsFollowing();

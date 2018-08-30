@@ -12,12 +12,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("General Discussion")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("General Discussion")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -29,12 +29,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("Get Help")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("Get Help")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -46,12 +46,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("Show & Vue.js")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("Show & Vue.js")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -63,12 +63,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("Show & CSS")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("Show & CSS")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -80,12 +80,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("Show & JS")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("Show & js")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -97,12 +97,12 @@
                 </div>
                 <div class="right">
                     <div class="top">
-                        <span>28</span>
+                        <span>{{handleWeekCount("Show & Node.js")}}</span>
                         <span>/</span>
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>7</span>
+                        <span>{{handleRecentCount("Show & Node.js")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
@@ -111,7 +111,57 @@
     </div>
 </template>
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      weekCount: "",
+      recentCount: ""
+    };
+  },
+  created() {
+    this.loadWeekCount();
+    this.loadRecentCount();
+  },
+  methods: {
+    async loadWeekCount() {
+      try {
+        var result = await this.$http.get("/topic/getCategoryWeekCount");
+        this.weekCount = result.data.data;
+      } catch (err) {
+        console.error("Local app is crash...");
+      }
+    },
+    async loadRecentCount() {
+      try {
+        var result = await this.$http.get("/topic/getCategoryRecentCount");
+        this.recentCount = result.data.data;
+      } catch (err) {
+        console.error("Local app is crash...");
+      }
+    },
+    handleWeekCount(category) {
+      var count = 0;
+      if (!this.weekCount) return;
+      this.weekCount.forEach(ele => {
+        if (ele.category == category) {
+          count = ele.WeekCount;
+        }
+      });
+      return count;
+    },
+    handleRecentCount(category) {
+      var count = 0;
+      if (!this.recentCount) return;
+      this.recentCount.forEach(ele => {
+        if (ele.category == category) {
+          count = ele.recentCount;
+        }
+      });
+      console.log(count);
+      return count;
+    }
+  }
+};
 </script>
 <style lang="less" scoped>
 .category {

@@ -1,25 +1,24 @@
 <template>
-  <div class="precomment">
-    <h2>评论</h2>
-    <div class="item" v-for="comment in commentArr" :key="comment.createdAt">
+  <div class="get-like">
+    <div class="item" v-for="like in likeArr" :key="like.createdAt">
       <!-- 左边内容：头像 -->
       <div class="left">
-        <avatar color="#fff" :src="comment.avatar" :username="comment.username" :inline=false :size=50></avatar>
+        <avatar color="#fff" :src="like.avatar" :username="like.username" :inline=false :size=50></avatar>
       </div>
       <!-- 右边内容 -->
       <div class="right">
         <!-- 第一行：姓名、发表日期 -->
         <div>
-          <span class="username">{{comment.username}}</span>
-          <span class="createdAt">{{comment.createdAt|dataFormat}}</span>
+          <span class="username">{{like.username}}</span>
+          <span class="createdAt">{{like.createdAt|dataFormat}}</span>
         </div>
         <!-- 第二行：评论内容 -->
         <div>
-          <a :href="`/topic?id=${comment.topic_id}#${comment.id}`">{{`${comment.content}...`}}</a>
+          <a @click.prevent="SkipToTarget(like.topic_id,like.topic_content,like.comment_id,like.comment_content,like.comment_son_id,like.comment_son_id_content,like.targetId)">{{likeContent(like.topic_id,like.topic_content,like.comment_id,like.comment_content,like.comment_son_id,like.comment_son_id_content)}}</a>
         </div>
         <!-- 第三行：评论目标 -->
         <div>
-          <span>{{getTargetContent(comment.targetContent,comment.targetCategory)}}</span>
+          <span>{{likeType(like.topic_id,like.topic_content,like.comment_id,like.comment_content,like.comment_son_id,like.comment_son_id_content)}}</span>
         </div>
       </div>
     </div>
@@ -27,10 +26,11 @@
 </template>
 <script>
 import Avatar from "vue-avatar";
+
 export default {
   data() {
     return {
-      commentArr: ""
+      likeArr: ""
     };
   },
   created() {
@@ -39,25 +39,56 @@ export default {
   methods: {
     async loadData() {
       try {
-        var result = await this.$http.get("/comment/getCommentByDefaultUserId");
+        var result = await this.$http.get("/like/getLikeListByLoad");
         if (result.data.code == 200) {
-          console.dir(result.data.data);
-          this.commentArr = result.data.data;
+          this.likeArr = result.data.data;
+          console.log(this.likeArr);
+        } else {
+          console.warn("you are not like anyone...");
         }
       } catch (err) {
-        console.log(err);
+        console.error("Local app crash...");
       }
     },
-    getTargetContent(vals, categry) {
-      if (categry == "son") {
-        return `[ 回复评论 ]：${vals}`;
+    likeContent(t_id, t_content, c_id, c_content, cs_id, cs_content) {
+      if (t_id != "%empty%") {
+        return `${t_content}...`;
+      } else if (c_id != "%empty%") {
+        return `${c_content}..`;
       } else {
-        return `[ 回复标题 ]：${vals}...`;
+        return `${cs_content}..`;
+      }
+    },
+    likeType(t_id, t_content, c_id, c_content, cs_id, cs_content) {
+      if (t_id != "%empty%") {
+        return "[ 点赞了文章 ]";
+      }
+      if (c_id != "%empty%") {
+        return "[ 点赞了评论 ]";
+      }
+      if (cs_id != "%empty%") {
+        return "[ 点赞了子评论 ]";
+      }
+    },
+    SkipToTarget(
+      t_id,
+      t_content,
+      c_id,
+      c_content,
+      cs_id,
+      cs_content,
+      targetId
+    ) {
+      if (t_id != "%empty%") {
+        this.$router.push(`/topic?id=${t_id}`);
+      }
+      if (c_id != "%empty%") {
+        this.$router.push(`/topic?id=${targetId}#${c_id}`);
+      }
+      if (cs_id != "%empty%") {
+        this.$router.push(`/topic?id=${targetId}#${cs_id}`);
       }
     }
-  },
-  components: {
-    Avatar
   },
   filters: {
     dataFormat(value) {
@@ -86,19 +117,14 @@ export default {
         return "刚刚";
       }
     }
+  },
+  components: {
+    Avatar
   }
 };
 </script>
-
 <style lang="less" scoped>
-.precomment {
-  h2 {
-    padding-bottom: 8px;
-    font-weight: 400;
-    margin-top: -5px;
-    letter-spacing: 2px;
-    border-bottom: 1px #e1e4e8 solid;
-  }
+.get-like {
   .item {
     display: flex;
     justify-content: space-between;
@@ -130,6 +156,7 @@ export default {
       div:nth-child(2) {
         display: flex;
         align-items: center;
+        cursor: pointer;
         margin-top: 10px;
         a {
           line-height: 28px;

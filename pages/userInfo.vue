@@ -18,6 +18,13 @@ export default {
   components: {
     UserInfoLeft,
     UserInfoRight
+  },
+  watch: {
+    // $route: {
+    //   handler: function(val) {
+    //     this.$router.go(0)
+    //   }
+    // }
   }
 };
 </script>

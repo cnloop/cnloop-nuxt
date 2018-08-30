@@ -21,12 +21,25 @@ module.exports = {
       href: '/favicon.ico'
     }]
   },
-
+  generate: {
+    routes: [
+      'category/general',
+      'category/help',
+      'category/vue',
+      'category/css',
+      'category/js',
+      'category/node'
+    ]
+  },
   loading: {
     color: '#3B8070'
   },
-
   build: {
+    filenames: {
+      manifest: 'manifest.app.[hash].js',
+      vendor: 'vendor.app.[chunkhash].js',
+      app: 'app.app.[chunkhash].js'
+    },
     loaders: [{
       test: /\.less$/,
       use: [{

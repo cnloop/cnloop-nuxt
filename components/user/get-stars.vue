@@ -2,7 +2,7 @@
   <div class="get-starts">
     <div class="item" v-for="topic in topicsCollectionArr" :key="topic.id">
       <!-- 标题 -->
-      <a :href="'/topic/'+topic.topic_id" class="title">{{topic.title}}</a>
+      <a :href="'/topic?id='+topic.topic_id" class="title">{{topic.title}}</a>
       <div class="bottom">
         <!-- 分类 -->
         <div class="category">
@@ -33,6 +33,7 @@ export default {
         var result = await this.$http.get(
           `/collection/getCollectionListByUserId/${this.userId}`
         );
+        console.log(result.data);
         if (result.data.code == 200) {
           this.topicsCollectionArr = result.data.data;
         }

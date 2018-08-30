@@ -2,7 +2,7 @@
   <div class="navtop">
     <nav-tip :isNavTipShow='isNavTipShow' @closeNavTip='closeNavTip'></nav-tip>
     <div class="wrp">
-      <img @click="$router.push('/')" class="home-left" src="~/assets/images/logo3.png">
+      <img @click="$router.push('/')" class="home-left" src="http://pbucd2xph.bkt.clouddn.com/logo.PNG">
       <div class="home-right">
         <i v-if="!$store.state.user" @click="$router.push('/search')" class="iconfont">&#xe651;</i>
         <div v-if="$store.state.user" class="userinfo">

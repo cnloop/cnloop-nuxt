@@ -11,7 +11,7 @@
             <avatar color="#fff" :src="topic.avatar" :username="topic.username" :inline=false :size=53></avatar>
           </div>
           <div class="info">
-            <a :href="'/topic/'+topic.id" class="title">{{topic.title}}</a>
+            <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
             <div class="bottom">
               <span :data-color="topic.category" v-colorFilterBackground></span>
               <span>{{topic.category}}</span>

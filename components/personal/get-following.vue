@@ -1,16 +1,16 @@
 <template>
-  <div class="get-followers">
-    <item-followers :followers="followers" :youSelfFollowingArr="youSelfFollowingArr" v-for="followers in followersArr" @loadYouFollwing="loadYouFollwing" :key="followers.id"></item-followers>
+  <div class="get-following">
+    <item-following :following="following" :youSelfFollowingArr="youSelfFollowingArr" v-for="following in followingArr" @loadYouFollwing="loadYouFollwing" :key="following.id"></item-following>
   </div>
 </template>
 <script>
-import ItemFollowers from "~/components/user/item-followers";
+import ItemFollowing from "~/components/personal/item-following";
 export default {
   props: ["userId"],
   data() {
     return {
-      // 作者正在被哪些人关注
-      followersArr: "",
+      // 作者正在关注哪些人
+      followingArr: "",
       // 你自已正在关注的人
       youSelfFollowingArr: []
     };
@@ -25,10 +25,10 @@ export default {
     async loadData() {
       try {
         var result = await this.$http.get(
-          `/follow/getTargetFollowersList/${this.userId}`
+          `/follow/getTargetfollowingListByDefault`
         );
         if (result.data.code == 200) {
-          this.followersArr = result.data.data;
+          this.followingArr = result.data.data;
         }
       } catch (err) {
         console.log(err);
@@ -39,6 +39,7 @@ export default {
       try {
         var result = await this.$http.get("/follow/getFollowingList");
         var newArr = [];
+
         if (result.data.code == 200) {
           result.data.data.forEach(ele => {
             if (ele) {
@@ -53,7 +54,7 @@ export default {
     }
   },
   components: {
-    ItemFollowers
+    ItemFollowing
   }
 };
 </script>

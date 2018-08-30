@@ -1,8 +1,18 @@
 <template>
-    <div class="precollection">
-        <h2>收藏</h2>
-    </div>
+  <div class="precollection">
+    <h2>收藏</h2>
+    <get-collection></get-collection>
+  </div>
 </template>
+<script>
+import GetCollection from "~/components/personal/get-collection";
+export default {
+  components: {
+    GetCollection
+  }
+};
+</script>
+
 <style lang="less" scoped>
 .precollection {
   h2 {

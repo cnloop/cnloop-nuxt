@@ -1,44 +1,44 @@
 <template>
-  <div class="item-follower">
-    <div class="item">
-      <!-- 头像、用户名、昵称 -->
-      <div class="left">
-        <!-- 头像 -->
-        <div>
-          <avatar :customStyle="customStyle" v-clickSkipUrl="{user_id:followers.user_id}" :src="followers.avatar" :username="followers.username" color="#fff" :inline=false :size=50></avatar>
-        </div>
-        <!-- 昵称 -->
-        <div>
-          <span @click="seeUserInfo(followers.user_id)">{{followers.username}}</span>
-          <span @click="seeUserInfo(followers.user_id)">{{followers.nickname?followers.nickname:followers.username}}</span>
-        </div>
-      </div>
-      <!-- 关注按钮 -->
-      <div class="right">
-        <div class="follow">
-          <span @click="changeFollowingStatus(followers.user_id)">{{isFollow(followers.user_id,youSelfFollowingArr)?"UnFollow":"Follow"}}</span>
-        </div>
+    <div class="item-following">
+        <div class="item">
+            <!-- 头像、用户名、昵称 -->
+            <div class="left">
+                <!-- 头像 -->
+                <div>
+                    <avatar :customStyle="customStyle" v-clickSkipUrl="{user_id:following.following_user_id}" :src="following.avatar" :username="following.username" color="#fff" :inline=false :size=50></avatar>
+                </div>
+                <!-- 昵称 -->
+                <div>
+                    <span @click="seeUserInfo(following.following_user_id)">{{following.username}}</span>
+                    <span @click="seeUserInfo(following.following_user_id)">{{following.nickname?following.nickname:following.username}}</span>
+                </div>
+            </div>
+            <!-- 关注按钮 -->
+            <div class="right">
+                <div class="follow">
+                    <span @click="changeFollowingStatus(following.following_user_id)">{{isFollow(following.following_user_id,youSelfFollowingArr)?"UnFollow":"Follow"}}</span>
+                </div>
 
-      </div>
-      <!-- 插入个人信息显示卡片 -->
-      <div v-show="isShowUserInfoCard" class="userInfoCard">
-        <div class="left">
-          <avatar :customStyle="customStyle" :src="followers.avatar" :username="followers.username" color="#fff" :inline=false :size=50></avatar>
+            </div>
+            <!-- 插入个人信息显示卡片 -->
+            <div v-show="isShowUserInfoCard" class="userInfoCard">
+                <div class="left">
+                    <avatar :customStyle="customStyle" :src="following.avatar" :username="following.username" color="#fff" :inline=false :size=50></avatar>
+                </div>
+                <div class="right">
+                    <span>{{following.username}}</span>
+                    <span>{{following.nickname?following.nickname:following.username}}</span>
+                </div>
+                <div class="triangle_down">
+                </div>
+            </div>
         </div>
-        <div class="right">
-          <span>{{followers.username}}</span>
-          <span>{{followers.nickname?followers.nickname:followers.username}}</span>
-        </div>
-        <div class="triangle_down">
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 <script>
 import Avatar from "vue-avatar";
 export default {
-  props: ["followers", "youSelfFollowingArr"],
+  props: ["following", "youSelfFollowingArr"],
   data() {
     return {
       customStyle: {
@@ -94,7 +94,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.item-follower {
+.item-following {
   .item {
     position: relative;
     display: flex;

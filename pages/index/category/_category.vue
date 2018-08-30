@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="val in getData" :key="val.id">
           <td>
-            <a :href="'/topic/'+val.id">{{val.title}}</a>
+            <a :href="'/topic?id='+val.id">{{val.title}}</a>
           </td>
           <td>
             <span :data-color="val.category" v-colorFilterBackground></span>

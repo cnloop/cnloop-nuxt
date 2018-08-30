@@ -1,40 +1,38 @@
 <template>
-    <div class="get-topics">
-        <div class="item" v-for="topic in topicsArr" :key="topic.id">
-            <!-- 标题 -->
-            <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
-            <div class="bottom">
-                <!-- 分类 -->
-                <div class="category">
-                    <span :data-color="topic.category" v-colorFilterBackground></span>
-                    <span>{{topic.category}}</span>
-                </div>
-                <!-- 修改时间 -->
-                <div class="time">修改时间：{{topic.updatedAt|dataFormat}}</div>
-            </div>
+  <div class="get-collection">
+    <div class="item" v-for="topic in topicsCollectionArr" :key="topic.id">
+      <!-- 标题 -->
+      <a :href="'/topic?id='+topic.topic_id" class="title">{{topic.title}}</a>
+      <div class="bottom">
+        <!-- 分类 -->
+        <div class="category">
+          <span :data-color="topic.category" v-colorFilterBackground></span>
+          <span>{{topic.category}}</span>
         </div>
+        <!-- 修改时间 -->
+        <div class="time">关注时间：{{topic.createdAt|dataFormat}}</div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      topicsArr: ""
+      topicsCollectionArr: ""
     };
   },
-  props: ["userId"],
   created() {
     this.loadData();
   },
   methods: {
     async loadData() {
       try {
-        if (!this.userId) return;
         var result = await this.$http.get(
-          `/topic/getTopicByUserId/${this.userId}`
+          `/collection/getCollectionListByDefault`
         );
         if (result.data.code == 200) {
-          this.topicsArr = result.data.data;
+          this.topicsCollectionArr = result.data.data;
         }
       } catch (err) {
         console.log(err);
@@ -42,24 +40,6 @@ export default {
     }
   },
   directives: {
-    colorFilterLine: {
-      inserted: function(el) {
-        var value = el.dataset.color;
-        if (!value) return "";
-        if (value === "General Discussion")
-          return (el.style.borderLeft = "4px solid rgb(18, 168, 157)");
-        if (value == "Get Help")
-          return (el.style.borderLeft = "4px solid rgb(101, 45, 144)");
-        if (value == "Show & Vue.js")
-          return (el.style.borderLeft = "4px solid rgb(247, 148, 29)");
-        if (value == "Show & CSS")
-          return (el.style.borderLeft = "4px solid rgb(191, 30, 46)");
-        if (value == "Show & JS")
-          return (el.style.borderLeft = "4px solid rgb(179, 181, 180)");
-        if (value == "Show & Node.js")
-          return (el.style.borderLeft = "4px solid rgb(37, 170, 226)");
-      }
-    },
     colorFilterBackground: {
       inserted: function(el) {
         var value = el.dataset.color;
@@ -110,7 +90,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.get-topics {
+.get-collection {
   .item {
     display: flex;
     flex-direction: column;

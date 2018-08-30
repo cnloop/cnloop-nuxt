@@ -1,8 +1,18 @@
 <template>
-    <div class="prefans">
-        <h2>粉丝</h2>
-    </div>
+  <div class="prefans">
+    <h2>粉丝</h2>
+    <get-followers></get-followers>
+  </div>
 </template>
+<script>
+import GetFollowers from "~/components/personal/get-followers";
+export default {
+  components: {
+    GetFollowers
+  }
+};
+</script>
+
 <style lang="less" scoped>
 .prefans {
   h2 {

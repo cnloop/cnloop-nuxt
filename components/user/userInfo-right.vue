@@ -4,23 +4,23 @@
     <div class="top-ava">
       <div @click="changeShowTarget('topics')" :class="{focusTarget:'topics'==showTarget}">
         <span>Topics</span>
-        <span>80</span>
+        <span>{{userAllCount.topicsCount}}</span>
       </div>
       <div @click="changeShowTarget('comments')" :class="{focusTarget:'comments'==showTarget}">
         <span>Comments</span>
-        <span>80</span>
+        <span>{{userAllCount.commentsCount}}</span>
       </div>
       <div @click="changeShowTarget('stars')" :class="{focusTarget:'stars'==showTarget}">
         <span>Stars</span>
-        <span>80</span>
+        <span>{{userAllCount.topics_collectionCount}}</span>
       </div>
       <div @click="changeShowTarget('followers')" :class="{focusTarget:'followers'==showTarget}">
         <span>Followers</span>
-        <span>80</span>
+        <span>{{userAllCount.fansCount}}</span>
       </div>
       <div @click="changeShowTarget('following')" :class="{focusTarget:'following'==showTarget}">
         <span>Following</span>
-        <span>80</span>
+        <span>{{userAllCount.followingCount}}</span>
       </div>
     </div>
     <!-- 展示窗口 -->
@@ -29,6 +29,7 @@
       <get-comments v-else-if="'comments'==showTarget" :userId="userId"></get-comments>
       <get-stars v-else-if="'stars'==showTarget" :userId="userId"></get-stars>
       <get-followers v-else-if="'followers'==showTarget" :userId="userId"></get-followers>
+      <get-following v-else-if="'following'==showTarget" :userId="userId"></get-following>
     </div>
   </div>
 </template>
@@ -38,20 +39,33 @@ import GetTopics from "~/components/user/get-topics";
 import GetComments from "~/components/user/get-comments";
 import GetStars from "~/components/user/get-stars";
 import GetFollowers from "~/components/user/get-followers";
+import GetFollowing from "~/components/user/get-following";
 
 export default {
   data() {
     return {
       userId: "",
-      showTarget: "topics"
+      showTarget: "topics",
+      userAllCount: ""
     };
   },
   created() {
     this.getUserId();
+    this.loadData();
   },
   methods: {
     getUserId() {
-      this.userId = this.$route.params.id;
+      this.userId = this.$route.query.id;
+    },
+    async loadData() {
+      try {
+        var result = await this.$http.get(
+          `/user/getAllCountById/${this.userId}`
+        );
+        this.userAllCount = result.data.data;
+      } catch (err) {
+        console.error("Local app is crash...");
+      }
     },
     changeShowTarget(val) {
       this.showTarget = val;
@@ -62,7 +76,8 @@ export default {
     GetTopics,
     GetComments,
     GetStars,
-    GetFollowers
+    GetFollowers,
+    GetFollowing
   }
 };
 </script>

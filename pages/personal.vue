@@ -3,13 +3,13 @@
     <div class="wrp">
       <div class="left">
         <h2>Home</h2>
-        <span :class="{sel:isSel==='/personal/pretopic'||isSel===''}" @click="$router.push('/personal/pretopic')">文章</span>
-        <span :class="{sel:isSel==='/personal/precomment'}" @click="$router.push('/personal/precomment')">评论</span>
-        <span :class="{sel:isSel==='/personal/prefollow'}" @click="$router.push('/personal/prefollow')">关注</span>
-        <span :class="{sel:isSel==='/personal/prefans'}" @click="$router.push('/personal/prefans')">粉丝</span>
-        <span :class="{sel:isSel==='/personal/prelike'}" @click="$router.push('/personal/prelike')">点赞</span>
-        <span :class="{sel:isSel==='/personal/premsg'}" @click="$router.push('/personal/premsg')">消息</span>
-        <span :class="{sel:isSel==='/personal/precollection'}" @click="$router.push('/personal/precollection')">收藏</span>
+        <span :class="{sel:isSel.indexOf('pretopic')>=0||isSel===''}" @click="$router.push('/personal/pretopic')">文章</span>
+        <span :class="{sel:isSel.indexOf('precomment')>=0}" @click="$router.push('/personal/precomment')">评论</span>
+        <span :class="{sel:isSel.indexOf('prefollow')>=0}" @click="$router.push('/personal/prefollow')">关注</span>
+        <span :class="{sel:isSel.indexOf('prefans')>=0}" @click="$router.push('/personal/prefans')">粉丝</span>
+        <span :class="{sel:isSel.indexOf('prelike')>=0}" @click="$router.push('/personal/prelike')">点赞</span>
+        <span :class="{sel:isSel.indexOf('premsg')>=0}" @click="$router.push('/personal/premsg')">消息</span>
+        <span :class="{sel:isSel.indexOf('precollection')>=0}" @click="$router.push('/personal/precollection')">收藏</span>
       </div>
       <div class="right">
         <nuxt-child></nuxt-child>
@@ -34,7 +34,7 @@ export default {
         }
         this.isSel = val.path;
       },
-      immediate: true
+      immediate: true,
     }
   }
 };

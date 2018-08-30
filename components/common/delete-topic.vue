@@ -31,7 +31,7 @@ export default {
 <style lang="less" scoped>
 .leave-tip {
   position: fixed;
-  z-index: 150;
+  z-index: 99;
   left: 0px;
   top: 0px;
   width: 100%;

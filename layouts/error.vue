@@ -21,7 +21,7 @@ export default {};
     position: fixed;
     top: 0px;
     height: 400px;
-    background-image: url("~/assets/images/github_2.jpg");
+    background-image: url("http://pbucd2xph.bkt.clouddn.com/github_2.jpg");
     background-size: cover;
     position: fixed;
     width: 100%;
@@ -39,12 +39,12 @@ export default {};
       .left {
         width: 270px;
         height: 249px;
-        background-image: url("~/assets/images/github_3.png");
+        background-image: url("http://pbucd2xph.bkt.clouddn.com/github_3.png");
       }
       .right {
         width: 188px;
         height: 229px;
-        background-image: url("~/assets/images/github_1.png");
+        background-image: url("http://pbucd2xph.bkt.clouddn.com/github_1.png");
       }
     }
   }

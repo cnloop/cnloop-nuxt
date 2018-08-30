@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     async loadData() {
-      var topic_id = this.$route.params.id;
+      var topic_id = this.$route.query.id;
       try {
         var result = await this.$http.get(
           `/topic/getTopicToUpdate/${topic_id}`
@@ -120,7 +120,7 @@ export default {
     closeMsg(str) {
       if (str === "yes") {
         this.isKip = true;
-        window.location.href=this.isKipUrl
+        window.location.href = this.isKipUrl;
       }
       this.isMsgShow = false;
     },
@@ -155,7 +155,8 @@ export default {
       var content = this.content;
       var category = this.sel.text;
       if (title && content && category) {
-        var topic_id = this.$route.params.id;
+        // var topic_id = this.$route.params.id;
+        var topic_id = this.$route.query.id;
         var result = await this.$http.patch(
           `/topic/updateTopicById/${topic_id}`,
           {
@@ -198,10 +199,11 @@ export default {
     LeaveIndex,
     SaveTip,
     preview: preview
+    // preview: () => import("~/components/write/preview")
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.isKipUrl = from.path;
+      vm.isKipUrl = from.fullPath;
     });
   },
   beforeRouteLeave(to, from, next) {
