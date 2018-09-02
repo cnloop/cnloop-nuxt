@@ -43,7 +43,7 @@ export default {
     },
     loginBygithub() {
       window.location.href =
-        "https://github.com/login/oauth/authorize?client_id=8a98ceca42bdf7bd689e&redirect_uri=http://127.0.0.1:3000/github";
+        "https://github.com/login/oauth/authorize?client_id=8a98ceca42bdf7bd689e&redirect_uri=https://cnloop.link/api/github";
     },
     toLogin(){
         this.closeNavTip();

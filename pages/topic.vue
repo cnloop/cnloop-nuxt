@@ -69,7 +69,7 @@ import Avatar from "vue-avatar";
 import Reply from "~/components/topic/reply";
 import CommentContent from "~/components/topic/comment-content";
 import DeleteTopic from "~/components/common/delete-topic";
-import Preview from "~/components/topic/content";
+// import Preview from "~/components/topic/content";
 export default {
   data() {
     return {
@@ -93,6 +93,9 @@ export default {
   created() {
     this.loadTopicInfo();
   },
+  mounted() {
+    this.addTopicBrowsed();    
+  },
   methods: {
     closeReply() {
       this.replyShow = false;
@@ -109,12 +112,23 @@ export default {
     async insertTopicLike() {
       var { id } = this.$route.query;
       try {
-        var result = await this.$http.post(`/topic/like?topic_id=${id}&receiver_user_id=${this.topicObj.user_id}`);
+        var result = await this.$http.post(
+          `/topic/like?topic_id=${id}&receiver_user_id=${this.topicObj.user_id}`
+        );
         if (result.data.code == 200) {
           this.loadTopicInfo();
         }
       } catch (err) {
         console.log(err);
+      }
+    },
+    async addTopicBrowsed() {
+      try {
+        var result = await this.$http.patch("/topic/addTopicBrowsed", {
+          topic_id: this.$route.query.id
+        });
+      } catch (err) {
+        console.log("addTopicBrowsed is crash ...");
       }
     },
     showLikeCount(val) {
@@ -222,8 +236,8 @@ export default {
     }
   },
   components: {
-    // preview: () => import("~/components/topic/content"),
-    Preview,
+    preview: () => import("~/components/topic/content"),
+    // Preview,
     Avatar,
     Reply,
     CommentContent,

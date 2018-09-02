@@ -24,7 +24,7 @@
             <avatar v-for="(v,key) in getUserInfo(val.result_user_info)" :key="key" color="#fff" :src="v.avatar" :username="v.username" :inline=true :size=25 class="td-ava"></avatar>
           </td>
           <td>{{val.result_count?val.result_count:0}}</td>
-          <td>31.3K</td>
+          <td>{{converBrowsed(val.browsed)}}</td>
           <td>{{val.result_time|dataFormat}}</td>
         </tr>
       </tbody>
@@ -127,6 +127,15 @@ export default {
         }
       } catch (err) {
         console.log(err);
+      }
+    },
+    converBrowsed(count) {
+      if (count > 1000) {
+        var val = count / 1000 + "";
+        var result = val.substring(0, val.indexOf(".") + 2);
+        return `${result}K`;
+      } else {
+        return count;
       }
     }
   },

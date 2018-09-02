@@ -7,8 +7,8 @@ import {
 } from './userinfo_init.js'
 
 export const http = axios.create({
-  baseURL: 'http://127.0.0.1:3000'
-  // baseURL: 'http://127.0.0.1/api'
+  // baseURL: 'http://127.0.0.1:3000'
+  baseURL: 'https://cnloop.link/api'
 })
 
 

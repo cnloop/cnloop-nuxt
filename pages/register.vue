@@ -47,9 +47,9 @@ export default {
   data() {
     return {
       alertMsg: "",
-      email: "592613734@qq.com",
-      password_one: "3429802yy",
-      password_two: "3429802yy",
+      email: "",
+      password_one: "",
+      password_two: "",
       captcha: "",
       captcha_img: "",
       captcha_token: "",

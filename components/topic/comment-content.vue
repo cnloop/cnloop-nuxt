@@ -9,7 +9,7 @@
       </div>
       <div class="right">
         <div class="top">
-          <span  @click="$router.push(`/userInfo?id=${comment.user_id}`)" class="user-name">{{comment.username}}</span>
+          <span @click="$router.push(`/userInfo?id=${comment.user_id}`)" class="user-name">{{comment.username}}</span>
           <span>{{comment.createdAt|dataFormat}}</span>
         </div>
         <no-ssr>
@@ -46,9 +46,7 @@
                 <span class="user-name">{{v.username}}</span>
                 <span>{{v.createdAt|dataFormat}}</span>
               </div>
-              <no-ssr>
-                <preview class="commentSon-preview" :previewContent='v.content'></preview>
-              </no-ssr>
+              <preview class="commentSon-preview" :previewContent='v.content'></preview>
               <!-- 二级评论小手图标 -->
               <div class="bottom">
                 <div>

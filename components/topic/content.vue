@@ -1,9 +1,7 @@
 <template>
   <div class="preview">
     <div class="wrp">
-      <no-ssr>
-        <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
-      </no-ssr>
+      <mavon-editor v-model="previewContent" :defaultOpen='isDefaultOpen' :subfield='isSubfield' :editable='isEditable' :codeStyle='codeStyle' :boxShadow='isBoxShadow' :toolbarsFlag='false' />
     </div>
   </div>
 </template>
