@@ -6,6 +6,7 @@
       <div class="home-right">
         <i v-if="!$store.state.user" @click="$router.push('/search')" class="iconfont">&#xe651;</i>
         <div v-if="$store.state.user" class="userinfo">
+          <i class="badge" v-show="$store.state.noticeCount"></i>
           <div @click.stop="showTip($event)" class="avaLogin">
             <avatar color="#fff" :size=32 :src='$store.state.user.avatar' :username="$store.state.user.username"></avatar>
           </div>
@@ -121,6 +122,16 @@ export default {
       position: relative;
       display: inline-flex;
       justify-content: space-between;
+      .badge {
+        position: absolute;
+        padding: 4px;
+        top: -3px;
+        right: -1px;
+        color: #fff;
+        font-size: 9px;
+        border-radius: 8px;
+        background-color: #f56c6c;
+      }
       .avaLogin {
         cursor: pointer;
       }

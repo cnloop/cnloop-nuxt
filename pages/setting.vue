@@ -1,44 +1,88 @@
 <template>
-    <div class="setting">
-        <div class="wrp">
-            <div class="item">
-                <span>昵称</span>
-                <input type="text">
-            </div>
-            <div class="item">
-                <span>签名</span>
-                <input type="text">
-            </div>
-            <div class="item">
-                <span>头像</span>
-                <span>仅支持JPG、PNG格式，文件小于1M(方形图)</span>
-            </div>
-            <div class="ava">
-                <div class="avawrp">
-                    <input v-imageUpload class="top" type="file" title="更改头像">
-                    <avatar :src='isSrc' :size=80 class="bottom" username="Jane Doe"></avatar>
-                </div>
-            </div>
-            <div class="update">
-                <div class="updatewrp">
-                    <span>保存</span>
-                    <span @click="quit">取消</span>
-                </div>
-            </div>
+  <div class="setting">
+    <div class="wrp">
+      <div class="item">
+        <span>昵称</span>
+        <input type="text" v-model="nickname">
+      </div>
+      <div class="item">
+        <span>签名</span>
+        <input type="text" v-model="motto">
+      </div>
+      <div class="item">
+        <span>头像</span>
+        <span>仅支持JPG、PNG格式，文件小于200KB(方形图)</span>
+      </div>
+      <div class="ava">
+        <div class="avawrp">
+          <input v-imageUpload ref="fileInput" class="top" type="file" title="更改头像">
+          <avatar :src="isSrc" :size=80 class="bottom" :username="username"></avatar>
         </div>
+      </div>
+      <div class="update">
+        <div class="updatewrp">
+          <span @click="uploadToServer">保存</span>
+          <span @click="quit">取消</span>
+        </div>
+      </div>
+      <div v-show="showTips" class="showTip">
+        <span>{{showTips}}</span>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 import Avatar from "vue-avatar";
+
 export default {
   data() {
     return {
-      isSrc: ""
+      isSrc: "",
+      nickname: "",
+      motto: "",
+      username: "",
+      showTips: ""
     };
   },
+  mounted() {
+    this.loadData();
+  },
   methods: {
+    loadData() {
+      this.$nextTick(function() {
+        this.nickname = this.$store.state.user.nickname;
+        this.motto = this.$store.state.user.motto;
+        this.isSrc = this.$store.state.user.avatar;
+        this.usernme = this.$store.state.user.usernme;
+      });
+      // this.nickname = this.$store.state.user.nickname;
+      // this.motto = this.$store.state.user.motto;
+      // this.isSrc = this.$store.state.user.avatar;
+      // this.usernme = this.$store.state.user.usernme;
+    },
     quit() {
       this.$router.push("/");
+    },
+    async uploadToServer() {
+      var file = this.$refs.fileInput.files[0];
+      var formData = new FormData();
+      formData.append("file", file);
+      formData.append("nickname", this.nickname);
+      formData.append("motto", this.motto);
+      try {
+        var result = await this.$http.post("/user/updateUserInfo", formData);
+        if (result.data.code != 200) {
+          return (this.showTips = "请选择正确的图片...");
+        }
+        this.$store.commit("changeUser", result.data.data);
+        var userInfo = JSON.parse(window.localStorage.getItem("cnloop"));
+        userInfo.user = result.data.data;
+        window.localStorage.setItem("cnloop", JSON.stringify(userInfo));
+
+        this.$router.push("/");
+      } catch (err) {
+        this.showTips = "请选择正确的图片...";
+      }
     }
   },
   directives: {
@@ -163,6 +207,15 @@ export default {
           margin-left: 70px;
         }
       }
+    }
+    .showTip {
+      width: 400px;
+      padding: 4px 5px;
+      margin-top: 30px;
+      background-color: #fef0f0;
+      color: #f56c6c;
+      font-size: 14px;
+      border-radius: 2px;
     }
   }
 }

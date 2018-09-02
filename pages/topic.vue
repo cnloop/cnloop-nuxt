@@ -14,12 +14,12 @@
         <div class="mian-content">
           <!-- avatar -->
           <div class="left">
-            <avatar color="#fff" :src="topicObj.avatar" :username="topicObj.username" :inline=false :size=43></avatar>
+            <avatar color="#fff" v-clickSkipUrl :src="topicObj.avatar" :username="topicObj.username" :inline=false :size=43></avatar>
           </div>
           <div class="right">
             <div class="mask"></div>
             <div class="top">
-              <div class="user-name">{{topicObj.username}}</div>
+              <span class="user-name">{{topicObj.username}}</span>
               <span>{{topicObj.createdAt|dataFormat}}</span>
             </div>
             <no-ssr>
@@ -109,7 +109,7 @@ export default {
     async insertTopicLike() {
       var { id } = this.$route.query;
       try {
-        var result = await this.$http.post(`/topic/like/${id}`);
+        var result = await this.$http.post(`/topic/like?topic_id=${id}&receiver_user_id=${this.topicObj.user_id}`);
         if (result.data.code == 200) {
           this.loadTopicInfo();
         }
@@ -175,6 +175,21 @@ export default {
           return (el.style.backgroundColor = "rgb(179, 181, 180)");
         if (value == "Show & Node.js")
           return (el.style.backgroundColor = "rgb(37, 170, 226)");
+      }
+    },
+    clickSkipUrl: {
+      inserted: function(el, binding, vnode) {
+        el.onclick = function() {
+          window.location.href = `/userInfo?id=${
+            vnode.context.topicObj.user_id
+          }`;
+        };
+        el.onmouseover = function() {
+          el.style.cursor = "pointer";
+        };
+        el.onmouseleave = function() {
+          el.style.cursor = "none";
+        };
       }
     }
   },

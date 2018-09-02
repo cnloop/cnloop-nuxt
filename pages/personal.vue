@@ -8,7 +8,10 @@
         <span :class="{sel:isSel.indexOf('prefollow')>=0}" @click="$router.push('/personal/prefollow')">关注</span>
         <span :class="{sel:isSel.indexOf('prefans')>=0}" @click="$router.push('/personal/prefans')">粉丝</span>
         <span :class="{sel:isSel.indexOf('prelike')>=0}" @click="$router.push('/personal/prelike')">点赞</span>
-        <span :class="{sel:isSel.indexOf('premsg')>=0}" @click="$router.push('/personal/premsg')">消息</span>
+        <span class="premsg" :class="{sel:isSel.indexOf('premsg')>=0}" @click="$router.push('/personal/premsg')">
+          <span>消息</span>
+          <span v-show="$store.state.noticeCount">{{$store.state.noticeCount}}</span>
+        </span>
         <span :class="{sel:isSel.indexOf('precollection')>=0}" @click="$router.push('/personal/precollection')">收藏</span>
       </div>
       <div class="right">
@@ -34,7 +37,7 @@ export default {
         }
         this.isSel = val.path;
       },
-      immediate: true,
+      immediate: true
     }
   }
 };
@@ -86,6 +89,22 @@ export default {
         width: 2px;
         content: "";
         background-color: #e36209;
+      }
+      .premsg {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        span {
+          padding: 0px;
+          border: none;
+        }
+        span:last-child {
+          padding:1px 4px;
+          font-size: 10px;
+          border-radius: 8px;
+          color: #fff;
+          background-color: #f56c6c;
+        }
       }
     }
     .right {

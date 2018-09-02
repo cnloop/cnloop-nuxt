@@ -33,7 +33,6 @@ export default {
         var result = await this.$http.get(
           `/collection/getCollectionListByUserId/${this.userId}`
         );
-        console.log(result.data);
         if (result.data.code == 200) {
           this.topicsCollectionArr = result.data.data;
         }

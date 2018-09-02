@@ -8,7 +8,7 @@
       <li :data-color="topic.category" v-for="topic in arr_topics" :key="topic.id">
         <div class="left">
           <div>
-            <avatar color="#fff" :src="topic.avatar" :username="topic.username" :inline=false :size=53></avatar>
+            <avatar color="#fff" v-clickSkipUrl="{user_id:topic.user_id}" :src="topic.avatar" :username="topic.username" :inline=false :size=53></avatar>
           </div>
           <div class="info">
             <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
@@ -29,7 +29,7 @@
       </li>
     </ul>
     <div class="more">
-      <router-link to="/#">更多</router-link>
+      <router-link to="category/general?newOrhot=new">更多</router-link>
     </div>
   </div>
 </template>
@@ -45,8 +45,6 @@ export default {
     try {
       var result = await this.$http.get("/topic/show/overview");
       this.arr_topics = result.data.data;
-      console.log(result);
-      console.dir(this.arr_topics);
     } catch (err) {
       console.log(err);
     }
@@ -77,6 +75,19 @@ export default {
           return (el.style.backgroundColor = "rgb(179, 181, 180)");
         if (value == "Show & Node.js")
           return (el.style.backgroundColor = "rgb(37, 170, 226)");
+      }
+    },
+    clickSkipUrl: {
+      inserted: function(el, binding, vnode) {
+        el.onclick = function() {
+          window.location.href = `/userInfo?id=${binding.value.user_id}`;
+        };
+        el.onmouseover = function() {
+          el.style.cursor="pointer"  
+        };
+        el.onmouseleave = function() {
+          el.style.cursor="none"
+        };
       }
     }
   },

@@ -64,7 +64,6 @@ export default {
       window.location.href = `/userInfo?id=${user_id}`;
     },
     isFollow(userId, userIdArr) {
-      console.log(userIdArr);
       var flag = false;
       userIdArr.forEach(ele => {
         if (userId == ele) {

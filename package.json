@@ -23,6 +23,7 @@
     "mavon-editor": "^2.6.15",
     "nuxt": "^1.0.0",
     "vue-avatar": "^2.1.5",
+    "vuejs-paginate": "^2.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

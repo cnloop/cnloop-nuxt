@@ -5,11 +5,11 @@
     <div :id="comment.id" class="main-content" v-for="comment in commentData" :key="comment.id">
       <!-- avatar -->
       <div class="left">
-        <avatar color="#fff" :src="comment.avatar" :username="comment.username" :inline=false :size=43></avatar>
+        <avatar color="#fff" v-clickSkipUrl="{user_id:comment.user_id}" :src="comment.avatar" :username="comment.username" :inline=false :size=43></avatar>
       </div>
       <div class="right">
         <div class="top">
-          <div class="user-name">{{comment.username}}</div>
+          <span  @click="$router.push(`/userInfo?id=${comment.user_id}`)" class="user-name">{{comment.username}}</span>
           <span>{{comment.createdAt|dataFormat}}</span>
         </div>
         <no-ssr>
@@ -43,7 +43,7 @@
             </div>
             <div class="commentSon-right">
               <div class="top">
-                <div class="user-name">{{v.username}}</div>
+                <span class="user-name">{{v.username}}</span>
                 <span>{{v.createdAt|dataFormat}}</span>
               </div>
               <no-ssr>
@@ -87,7 +87,6 @@ export default {
         var result = await this.$http.get(`/comment/list/${_this.topicId}`);
         if (result.data.code == 200) {
           this.commentData = result.data.data;
-          console.log(this.commentData);
           this.isShow = true;
         }
       } catch (err) {
@@ -214,6 +213,19 @@ export default {
           el.click();
         }
       }
+    },
+    clickSkipUrl: {
+      inserted: function(el, binding, vnode) {
+        el.onclick = function() {
+          window.location.href = `/userInfo?id=${binding.value.user_id}`;
+        };
+        el.onmouseover = function() {
+          el.style.cursor = "pointer";
+        };
+        el.onmouseleave = function() {
+          el.style.cursor = "none";
+        };
+      }
     }
   },
   filters: {
@@ -280,6 +292,7 @@ export default {
         color: #bdbdbd;
         font-size: 14px;
         .user-name {
+          cursor: pointer;
           font-weight: 600;
         }
       }
@@ -387,6 +400,7 @@ export default {
               justify-content: space-between;
               color: #bdbdbd;
               .user-name {
+                cursor: pointer;
                 font-weight: 600;
               }
             }

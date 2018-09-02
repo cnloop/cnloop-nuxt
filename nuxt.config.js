@@ -21,6 +21,14 @@ module.exports = {
       href: '/favicon.ico'
     }]
   },
+  router: {
+    scrollBehavior: function (to, from, savedPosition) {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
+  },
   generate: {
     routes: [
       'category/general',
@@ -64,12 +72,15 @@ module.exports = {
       }
     }
   },
-  vendor: ['vue-avatar', '~/plugins/http.js', '~/plugins/nuxt-mavon-editor.js'],
+  vendor: ['vue-avatar', '~/plugins/http.js', '~/plugins/nuxt-mavon-editor.js', '~/plugins/paginate.js'],
   plugins: [{
     src: '~/plugins/nuxt-mavon-editor.js',
     ssr: false
   }, {
     src: '~/plugins/http.js'
+  }, {
+    src: '~/plugins/paginate.js',
+    ssr: false
   }],
   css: [
     'mavon-editor/dist/css/index.css'

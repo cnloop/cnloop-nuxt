@@ -41,7 +41,6 @@ export default {
       try {
         var result = await this.$http.get("/comment/getCommentByDefaultUserId");
         if (result.data.code == 200) {
-          console.dir(result.data.data);
           this.commentArr = result.data.data;
         }
       } catch (err) {

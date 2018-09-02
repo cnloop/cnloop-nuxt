@@ -55,12 +55,6 @@ export default {
       }
     };
   },
-  beforeRouteEnter(to, from, next) {
-    // ...
-    console.log(to);
-    console.log(from);
-    next();
-  },
   methods: {
     trim(str) {
       return str.replace(/(^\s*)|(\s*$)/g, "");

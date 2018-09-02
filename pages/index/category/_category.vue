@@ -29,6 +29,11 @@
         </tr>
       </tbody>
     </table>
+    <!-- 导航 -->
+    <no-ssr>
+      <paginate v-if="pageCount" v-model="pageIndex" :page-count="pageCount" :page-range="3" :margin-pages="2" :click-handler="clickCallback" :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'" :page-link-class="'page-link'" :prev-link-class="'prev-link'" :next-link-class="'next-link'" :active-class="'activeEle'">
+      </paginate>
+    </no-ssr>
   </div>
 </template>
 <script>
@@ -38,7 +43,9 @@ export default {
     return {
       category: "",
       newOrhot: "",
-      getData: ""
+      getData: "",
+      pageIndex: 1,
+      pageCount: 1
     };
   },
   created() {
@@ -49,15 +56,22 @@ export default {
       this.category = this.$route.params.category
         ? this.$route.params.category
         : "general";
-      this.newOrhot = this.$route.query ? this.$route.query.newOrhot : "new";
+      this.newOrhot = this.$route.query.newOrhot
+        ? this.$route.query.newOrhot
+        : "new";
       if (!this.category) return;
       if (!this.newOrhot) return;
       try {
         var result = await this.$http.get(
-          `/topic/list?category=${this.category}&newOrhot=${this.newOrhot}`
+          `/topic/list?category=${this.category}&newOrhot=${
+            this.newOrhot
+          }&pageIndex=${this.pageIndex}`
         );
         if (result.data.code == 200) {
-          this.getData = result.data.data;
+          this.getData = result.data.data.topics;
+          this.pageCount = result.data.data.pageCount;
+        } else {
+          this.pageCount = 0;
         }
       } catch (err) {
         console.log(err);
@@ -90,6 +104,30 @@ export default {
         }
       });
       return arr3.slice(0, 10);
+    },
+    async clickCallback(pageNum) {
+      this.category = this.$route.params.category
+        ? this.$route.params.category
+        : "general";
+      this.newOrhot = this.$route.query.newOrhot
+        ? this.$route.query.newOrhot
+        : "new";
+      if (!this.category) return;
+      if (!this.newOrhot) return;
+      try {
+        var result = await this.$http.get(
+          `/topic/list?category=${this.category}&newOrhot=${
+            this.newOrhot
+          }&pageIndex=${pageNum}`
+        );
+        if (result.data.code == 200) {
+          this.getData = result.data.data.topics;
+          this.pageCount = result.data.data.pageCount;
+          this.pageIndex = pageNum;
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   },
   filters: {
@@ -152,10 +190,12 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .special-category {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
 }
 .special-category table {
   width: 1100px;
@@ -223,6 +263,7 @@ export default {
       }
     }
     td:nth-child(3) {
+      height: 100%;
       display: flex;
       align-items: center;
       .td-ava:first-child {
@@ -248,6 +289,34 @@ export default {
       font-size: 14px;
       text-align: center;
     }
+  }
+}
+
+.special-category .pagination {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: content-box;
+  border: 1px solid #ddd;
+  .page-link {
+    box-sizing: border-box;
+    display: flex;
+    padding: 6px 10px;
+    border-right: 1px solid #ddd;
+  }
+  .page-link:first-child {
+    border-left: 1px solid #ddd;
+  }
+  .prev-link {
+    height: 100%;
+    padding: 6px 10px;
+  }
+  .next-link {
+    padding: 6px 10px;
+  }
+  .activeEle {
+    border: 1px solid rgb(77, 144, 254);
   }
 }
 </style>

@@ -7,7 +7,7 @@
         <ul class="content">
             <li>
                 <div class="left">
-                    <router-link to="/">General Discussion</router-link>
+                    <router-link to="category/general?newOrhot=new">General Discussion</router-link>
                     <span>不需要分类或者不适合放在现在的任何分类中的主题</span>
                 </div>
                 <div class="right">
@@ -24,7 +24,7 @@
             </li>
             <li>
                 <div class="left">
-                    <router-link to="/">Get Help</router-link>
+                    <router-link to="category/help?newOrhot=new">Get Help</router-link>
                     <span>Got stuck? Get help from other users here. Better yet, help others out once you leveled up your own skills!</span>
                 </div>
                 <div class="right">
@@ -41,7 +41,7 @@
             </li>
             <li>
                 <div class="left">
-                    <router-link to="/">Show & Vue.js</router-link>
+                    <router-link to="category/vue?newOrhot=new">Show & Vue.js</router-link>
                     <span>Show your cool stuff! Anything built with or related to Vue.js goes.</span>
                 </div>
                 <div class="right">
@@ -58,7 +58,7 @@
             </li>
             <li>
                 <div class="left">
-                    <router-link to="/">Show & CSS</router-link>
+                    <router-link to="category/css?newOrhot=new">Show & CSS</router-link>
                     <span>Show your cool stuff! Anything built with or related to CSS goes.</span>
                 </div>
                 <div class="right">
@@ -75,7 +75,7 @@
             </li>
             <li>
                 <div class="left">
-                    <router-link to="/">Show & JS</router-link>
+                    <router-link to="category/js?newOrhot=new">Show & JS</router-link>
                     <span>Show your cool stuff! Anything built with or related to JS goes.</span>
                 </div>
                 <div class="right">
@@ -85,14 +85,14 @@
                         <span>周</span>
                     </div>
                     <div class="bottom">
-                        <span>{{handleRecentCount("Show & js")}}</span>
+                        <span>{{handleRecentCount("Show & JS")}}</span>
                         <span>近期</span>
                     </div>
                 </div>
             </li>
             <li>
                 <div class="left">
-                    <router-link to="/">Show & Node.js</router-link>
+                    <router-link to="category/node?newOrhot=new">Show & Node.js</router-link>
                     <span>Show your cool stuff! Anything built with or related to Node.js goes.</span>
                 </div>
                 <div class="right">
@@ -157,7 +157,6 @@ export default {
           count = ele.recentCount;
         }
       });
-      console.log(count);
       return count;
     }
   }

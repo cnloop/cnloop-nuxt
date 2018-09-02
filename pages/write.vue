@@ -25,7 +25,7 @@
       </div>
       <div class="mk">
         <no-ssr>
-          <mavon-editor :codeStyle='codeStyle' :subfield='false' :boxShadow='false' :toolbars='toolbars' v-model="content" />
+          <mavon-editor ref=md @imgAdd="$imgAdd" :codeStyle='codeStyle' :subfield='false' :boxShadow='false' :placeholder="'图片上传小于2M，接口走七牛云，上传成功之后立即预览会有延迟'" :toolbars='toolbars' v-model="content" />
         </no-ssr>
       </div>
       <div class="submit">
@@ -174,6 +174,21 @@ export default {
         }
       } else {
         this.isTipErr = true;
+      }
+    },
+    async $imgAdd(pos, $file) {
+      var formData = new FormData();
+      formData.append("image", $file);
+      try {
+        var result = await this.$http.post("/topic/uploadImage", formData);
+        console.log(result);
+        if (result.data.code == 200) {
+          this.$refs.md.$img2Url(pos, result.data.data);
+        } else {
+          this.$refs.md.$img2Url(pos, "upload err...");
+        }
+      } catch (err) {
+        this.$refs.md.$img2Url(pos, "upload err...");
       }
     }
   },

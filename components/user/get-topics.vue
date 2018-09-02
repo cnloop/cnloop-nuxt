@@ -1,25 +1,31 @@
 <template>
-    <div class="get-topics">
-        <div class="item" v-for="topic in topicsArr" :key="topic.id">
-            <!-- 标题 -->
-            <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
-            <div class="bottom">
-                <!-- 分类 -->
-                <div class="category">
-                    <span :data-color="topic.category" v-colorFilterBackground></span>
-                    <span>{{topic.category}}</span>
-                </div>
-                <!-- 修改时间 -->
-                <div class="time">修改时间：{{topic.updatedAt|dataFormat}}</div>
-            </div>
+  <div class="get-topics">
+    <div class="item" v-for="topic in topicsArr" :key="topic.id">
+      <!-- 标题 -->
+      <a :href="'/topic?id='+topic.id" class="title">{{topic.title}}</a>
+      <div class="bottom">
+        <!-- 分类 -->
+        <div class="category">
+          <span :data-color="topic.category" v-colorFilterBackground></span>
+          <span>{{topic.category}}</span>
         </div>
+        <!-- 修改时间 -->
+        <div class="time">修改时间：{{topic.updatedAt|dataFormat}}</div>
+      </div>
     </div>
+    <no-ssr>
+      <paginate v-if="pageCount" v-model="pageIndex" :page-count="pageCount" :page-range="3" :margin-pages="2" :click-handler="clickCallback" :prev-text="'Prev'" :next-text="'Next'" :container-class="'pagination'" :page-link-class="'page-link'" :prev-link-class="'prev-link'" :next-link-class="'next-link'" :active-class="'activeEle'">
+      </paginate>
+    </no-ssr>
+  </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      topicsArr: ""
+      topicsArr: "",
+      pageIndex: 1,
+      pageCount: 1
     };
   },
   props: ["userId"],
@@ -34,7 +40,26 @@ export default {
           `/topic/getTopicByUserId/${this.userId}`
         );
         if (result.data.code == 200) {
-          this.topicsArr = result.data.data;
+          this.topicsArr = result.data.data.topics;
+          this.pageCount = result.data.data.pageCount;
+        } else {
+          this.pageCount = 0;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async clickCallback(pageNum) {
+      try {
+        var result = await this.$http.get(
+          `/topic/getTopicByUserId/${this.userId}?pageIndex=${pageNum}`
+        );
+        if (result.data.code == 200) {
+          this.topicsArr = result.data.data.topics;
+          this.pageCount = result.data.data.pageCount;
+          document.body.scrollTop = document.documentElement.scrollTop = 0;
+        } else {
+          this.pageCount = 0;
         }
       } catch (err) {
         console.log(err);
@@ -109,7 +134,7 @@ export default {
   }
 };
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .get-topics {
   .item {
     display: flex;
@@ -149,6 +174,32 @@ export default {
         color: #919191;
         font-size: 12px;
       }
+    }
+  }
+  .pagination {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    .page-link {
+      box-sizing: border-box;
+      display: flex;
+      padding: 6px 10px;
+      border-right: 1px solid #ddd;
+    }
+    .page-link:first-child {
+      border-left: 1px solid #ddd;
+    }
+    .prev-link {
+      height: 100%;
+      padding: 6px 10px;
+    }
+    .next-link {
+      padding: 6px 10px;
+    }
+    .activeEle {
+      border: 1px solid rgb(77, 144, 254);
     }
   }
 }

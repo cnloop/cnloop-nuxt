@@ -1,5 +1,5 @@
 <template>
-  <div class="nuxt-app" v-isShow>
+  <div class="nuxt-app" v-isShow v-getNoticeCount>
     <nav-top></nav-top>
     <nuxt/>
   </div>
@@ -32,6 +32,13 @@ export default {
       if (!this.$store.state.user.id) return;
       var result = this.$http.get("/login/markLoginStatus");
       // console.dir(result);
+    },
+    async handleGetNoticeCount() {
+      try {
+        var result = await this.$http.get("/notice/getNoticeCount");
+      } catch (err) {
+        console.log("handleGetNoticeCounts is crash...");
+      }
     }
   },
   directives: {
@@ -43,6 +50,25 @@ export default {
             parentClassName: ""
           });
         });
+      }
+    },
+    getNoticeCount: {
+      async inserted(el, binding, vnode) {
+        var id = "";
+        await vnode.context.$nextTick(() => {
+          id = vnode.context.$store.state.user.id;
+        });
+        if (!id) return;
+        window.setInterval(async () => {
+          try {
+            var result = await vnode.context.$http.get(
+              "/notice/getNoticeCount"
+            );
+            vnode.context.$store.commit("changeNoticeCount", result.data.data);
+          } catch (err) {
+            console.log(err);
+          }
+        }, 1000 * 15);
       }
     }
   }

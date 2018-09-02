@@ -42,7 +42,6 @@ export default {
         var result = await this.$http.get("/like/getLikeListByLoad");
         if (result.data.code == 200) {
           this.likeArr = result.data.data;
-          console.log(this.likeArr);
         } else {
           console.warn("you are not like anyone...");
         }

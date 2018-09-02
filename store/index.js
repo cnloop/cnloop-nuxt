@@ -11,6 +11,7 @@ const store = () => new Vuex.Store({
       isTrue: false,
       parentClassName: ''
     },
+    noticeCount: 0,
     replyEndAndLoad: false
   },
   mutations: {
@@ -22,6 +23,9 @@ const store = () => new Vuex.Store({
     },
     changeReplyEndAndLoad(state) {
       state.replyEndAndLoad = !state.replyEndAndLoad
+    },
+    changeNoticeCount(state, count) {
+      state.noticeCount = count
     }
   }
 })

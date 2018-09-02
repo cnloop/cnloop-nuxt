@@ -27,7 +27,6 @@ export default {
         var result = await this.$http.get(
           `/follow/getTargetFollowersListByDefault`
         );
-        // console.log(result);
         if (result.data.code == 200) {
           this.followersArr = result.data.data;
         }

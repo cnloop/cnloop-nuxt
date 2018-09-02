@@ -1,10 +1,10 @@
 <template>
-    <div class="gitubPage">
-        <div v-if="isShow" class="wrp">
-            <strong>提示：</strong>
-            <span>{{tip}}</span>
-        </div>
+  <div class="gitubPage">
+    <div v-if="isShow" class="wrp">
+      <strong>提示：</strong>
+      <span>{{tip}}</span>
     </div>
+  </div>
 </template>
 <script>
 import { saveUserInfo } from "~/assets/js/userinfo_init.js";
